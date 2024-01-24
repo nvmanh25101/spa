@@ -105,8 +105,7 @@ class CategoryController extends Controller
 
     public function destroy($categoryId)
     {
-        if (Product::query()->where('category_id', $categoryId)->exists() || Category::query()->where('parent_id',
-                $categoryId)->exists()) {
+        if (Product::query()->where('category_id', $categoryId)->exists()) {
             return response()->json([
                 'error' => 'Không thể xóa danh mục này vì có sản phẩm thuộc danh mục này',
             ]);

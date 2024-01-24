@@ -76,14 +76,17 @@ class ShopController extends Controller
     {
         $product = Product::query()->findOrFail($id);
         $reviews = $product->reviews()->with('customer')->simplePaginate(5);
-        $order_count = Order::whereHas('products', function ($query) use ($id) {
-            $query->where('products.id', $id);
-        })->where('customer_id', auth()->user()->id)->count();
+        
+        if (auth()->user()) {
+            $order_count = Order::whereHas('products', function ($query) use ($id) {
+                $query->where('products.id', $id);
+            })->where('customer_id', auth()->user()->id)->count();
+        }
 
         return view('customer.product', [
             'product' => $product,
             'reviews' => $reviews,
-            'order_count' => $order_count
+            'order_count' => $order_count ?? 0
         ]);
     }
 

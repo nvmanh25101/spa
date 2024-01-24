@@ -13,7 +13,7 @@
             @csrf
             @method('PUT')
             <div class="form-group">
-                <label>Họ tên</label>
+                <label>Tên</label>
                 <input type="text" class="form-control" name="name" value="{{ $product->name }}" required>
             </div>
 
@@ -117,7 +117,7 @@
                 </td>
                 <td>
                     @for($i=1; $i <= 5; $i++)
-                        @if($i < $review->rating)
+                        @if($i <= $review->rating)
                             <span class="star-full"><i
                                     class="mdi mdi-star"></i></span>
                         @else

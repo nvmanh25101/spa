@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-    public string $ControllerName = 'Giỏ hàng';
+    public string $ControllerName = 'Đơn hàng';
 
     public function __construct()
     {
@@ -46,6 +46,7 @@ class OrderController extends Controller
     public function show($id)
     {
         $order = Order::query()->with(['products', 'voucher', 'admin'])->find($id);
+
         return view('customer.order_detail', [
             'order' => $order
         ]);
@@ -75,7 +76,6 @@ class OrderController extends Controller
         $arr['total'] = checkVoucher($request, Order::class, VoucherApplyTypeEnum::SAN_PHAM,
             $price) ?? $price;
         $arr['shipping_fee'] = 0;
-
         DB::beginTransaction();
         try {
             $order = Order::query()->create($arr);
@@ -115,7 +115,6 @@ class OrderController extends Controller
     public function update(CheckoutRequest $request, $id)
     {
         $order = Order::query()->findOrFail($id);
-
         if ($request->payment_method == OrderPaymentEnum::CHUYEN_KHOAN) {
             $vnpay = new VnpayController();
             $vnpay->create($order);

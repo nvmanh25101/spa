@@ -332,11 +332,19 @@
                         if (discount > max_spend) {
                             discount = max_spend;
                             $('#max_discount').text('Tối đa' + max_spend + ' VND');
-
                         }
+
+                        if (discount > total_price_value) {
+                            discount = total_price_value;
+                        }
+
                         total_price_after_discount = total_price_value - discount;
                         discount_price_element.text(discount + ' VND');
                     } else {
+                        if (voucher_value > total_price_value) {
+                            voucher_value = total_price_value;
+                        }
+
                         total_price_after_discount = total_price_value - voucher_value;
                         discount_price_element.text(voucher_value + ' VND');
                     }

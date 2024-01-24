@@ -43,10 +43,15 @@
             </li>
             @if (Auth::guard('admin')->user()->role === AdminType::QUAN_LY)
                 <li class="side-nav-item">
-                    <a href="{{ route('admin.employees.index') }}" class="side-nav-link">
-                        <span> Quản lý nhân viên</span>
+                    <a href="javascript: void(0);" class="side-nav-link" aria-expanded="false">
+                        {{--                        <i class="uil-store"></i>--}}
+                        <span> Quản lý nhân viên </span>
+                        <span class="menu-arrow"></span>
                     </a>
-                    <ul class="side-nav-second-level mm-collapse mm-show" aria-expanded="false" style="">
+                    <ul class="side-nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
+                        <li>
+                            <a href="{{ route('admin.employees.index') }}">Nhân viên</a>
+                        </li>
                         <li>
                             <a href="{{ route('admin.employees.resign') }}">Nhân viên nghỉ việc</a>
                         </li>
@@ -55,6 +60,11 @@
                 <li class="side-nav-item">
                     <a href="{{ route('admin.vouchers.index') }}" class="side-nav-link">
                         <span>Voucher</span>
+                    </a>
+                </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('admin.statistic') }}" class="side-nav-link">
+                        <span>Thống kê</span>
                     </a>
                 </li>
             @endif

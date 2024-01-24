@@ -1,4 +1,4 @@
-@php use App\Enums\OrderPaymentEnum; @endphp
+@php use App\Enums\AdminRoleEnum;use App\Enums\AdminType;use App\Enums\OrderPaymentEnum;use Illuminate\Support\Facades\Auth; @endphp
 @extends('admin.layouts.master')
 @section('content')
     <div class="col-12">
@@ -42,7 +42,11 @@
                     </div>
                     <div class="form-group">
                         <label>Trạng thái thanh toán</label>
-                        <select class="form-control" name="payment_status">
+                        <select class="form-control" name="payment_status"
+                                @if(Auth::guard('admin')->user()->role === AdminType::VAN_CHUYEN)
+                                    readonly
+                            @endif
+                        >
                             @foreach($arrOrderPaymentStatus as $option => $value)
                                 <option value="{{ $value }}"
                                         @if($order->payment_status === $value)

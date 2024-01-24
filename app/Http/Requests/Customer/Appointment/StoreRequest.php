@@ -58,11 +58,6 @@ class StoreRequest extends FormRequest
                 'integer',
                 'exists:price_services,id',
             ],
-            'customer_id' => [
-                'nullable',
-                'integer',
-                'exists:customers,id',
-            ],
             'voucher_id' => [
                 'nullable',
                 'integer',
@@ -100,8 +95,6 @@ class StoreRequest extends FormRequest
             'price_id.required' => 'Vui lòng nhập :attribute',
             'price_id.integer' => ':attribute phải là số nguyên',
             'price_id.exists' => ':attribute không tồn tại',
-            'customer_id.integer' => ':attribute phải là số nguyên',
-            'customer_id.exists' => ':attribute không tồn tại',
             'voucher_id.integer' => ':attribute phải là số nguyên',
             'voucher_id.exists' => ':attribute không tồn tại',
         ];

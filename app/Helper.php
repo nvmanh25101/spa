@@ -47,10 +47,24 @@ if (!function_exists('checkVoucher')) {
             }
 
             if ($voucher->type === VoucherTypeEnum::PHAN_TRAM) {
-                $total = $price - $price * $voucher->value / 100;
+                $discount = $price * $voucher->value / 100;
+                if ($discount > $voucher->max_spend) {
+                    $discount = $voucher->max_spend;
+                }
+
+                if ($discount > $price) {
+                    $discount = $price;
+                }
+
+                $total = $price - $discount;
             } else {
-                $total = $price - $voucher->value;
+                $voucher_value = $voucher->value;
+                if ($voucher_value > $price) {
+                    $voucher_value = $price;
+                }
+                $total = $price - $voucher_value;
             }
+            
             --$voucher->uses_per_voucher;
             $voucher->save();
 

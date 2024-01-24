@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <label>Hình thức thanh toán</label>
                     <input type="text" class="form-control" name="payment_method" readonly
-                           value="{{ OrderPaymentEnum::getKeyByValue($order->payment_method)  }}">
+                           value="@if ($order->payment_method) {{ OrderPaymentEnum::getKeyByValue($order->payment_method) }} @endif">
                 </div>
             </div>
             <div class="col-6">
@@ -87,7 +87,7 @@
                 <label class="col-3 col-form-label">Voucher</label>
                 <div class="col-9">
                     <input type="text" class="form-control" name="voucher" id="voucher" disabled
-                           value="{{ $order->voucher->name }}">
+                           value="{{ $order->voucher->name ?? '' }}">
                 </div>
                 <div class="voucher-error text-danger"></div>
 
@@ -99,7 +99,6 @@
                     <span class="col-3 col-form-label">Tổng tiền</span>
                     <span class="col-9 d-flex align-items-center fs-4">{{ $order->total }}VND</span>
                 </div>
-                <button class="btn btn-primary mb-3" id="btn-submit" type="submit">Cập nhật</button>
             </div>
         </div>
     </div>

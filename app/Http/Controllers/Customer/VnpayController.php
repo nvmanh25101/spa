@@ -15,12 +15,13 @@ class VnpayController extends Controller
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $vnp_Version = "2.1.0";
         $vnp_ReturnUrl = route('vnpay.return');
-        $vnp_Url = env('VNPAY_URL');
-        $vnp_TmnCode = env('VNPAY_TMNCODE'); //Mã website tại VNPAY
-        $vnp_HashSecret = env('VNPAY_HASHSECRET'); //Chuỗi bí mật
+        $vnp_Url = env('VNPAY_URL', 'https://sandbox.vnpayment.vn/paymentv2/vpcpay.html');
+
+        $vnp_TmnCode = env('VNPAY_TMNCODE', 'UA9Z9GG3'); //Mã website tại VNPAY
+        $vnp_HashSecret = env('VNPAY_HASHSECRET', 'OTLBXSDGCEGKPDYVLGDUHWYJSENPCCLY'); //Chuỗi bí mật
 
         $vnp_TxnRef = $order->code;
-        $vnp_OrderInfo = "Thanh toán đơn hàng có mã".$vnp_TxnRef;
+        $vnp_OrderInfo = "Thanh toán đơn hàng có mã ".$vnp_TxnRef;
         $vnp_OrderType = "billpayment";
         $vnp_Amount = $order->total * 100;
         $vnp_Locale = "vn";
@@ -78,7 +79,7 @@ class VnpayController extends Controller
         if (request('vnp_TransactionStatus') == 00) {
             $order_code = request('vnp_TxnRef');
             $order = Order::where('code', $order_code)->first();
-            if ($order->payment_type == 0) {
+            if ($order->payment_type == OrderPaymentEnum::CHUYEN_KHOAN) {
                 $order->update([
                     'payment_method' => OrderPaymentEnum::CHUYEN_KHOAN,
                     'payment_status' => OrderPaymentStatusEnum::DA_THANH_TOAN,
@@ -86,6 +87,6 @@ class VnpayController extends Controller
                 return view('customer.thankyou');
             }
         }
-        return redirect()->route('customer.checkout')->with(['error' => 'Thanh toán đơn hàng không thành công! Vui lòng thử lại!']);
+        return redirect()->route('orders.index')->with(['error' => 'Thanh toán đơn hàng không thành công! Vui lòng thử lại!']);
     }
 }
