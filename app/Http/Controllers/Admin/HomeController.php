@@ -71,7 +71,7 @@ class HomeController extends Controller
                 ->selectRaw('DATE_FORMAT(created_at, "%m") as date, sum(total) as income')
                 ->where('status', OrderStatusEnum::HOAN_THANH)
                 ->groupBy(DB::raw('DATE_FORMAT(created_at, "%m")'))
-                ->get();.
+                ->get();
             $today = Carbon::now()->format('m');
 
             for ($i = 1; $i <= $today; $i++) {
