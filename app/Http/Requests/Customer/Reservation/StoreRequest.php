@@ -45,6 +45,11 @@ class StoreRequest extends FormRequest
                 'integer',
                 'exists:vouchers,id',
             ],
+            'tour_id' => [
+                'required',
+                'integer',
+                'exists:tours,id',
+            ],
         ];
     }
 
