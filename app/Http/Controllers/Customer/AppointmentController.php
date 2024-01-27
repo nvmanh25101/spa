@@ -8,7 +8,7 @@ use App\Enums\ServiceStatusEnum;
 use App\Enums\VoucherApplyTypeEnum;
 use App\Enums\VoucherStatusEnum;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Customer\Appointment\StoreRequest;
+use App\Http\Requests\Customer\Reservation\StoreRequest;
 use App\Models\Appointment;
 use App\Models\Category;
 use App\Models\PriceService;

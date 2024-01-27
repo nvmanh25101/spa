@@ -43,20 +43,14 @@
             </li>
             @if (Auth::guard('admin')->user()->role === AdminType::QUAN_LY)
                 <li class="side-nav-item">
-                    <a href="javascript: void(0);" class="side-nav-link" aria-expanded="false">
+                    <a href="{{ route('admin.employees.index') }}" class="side-nav-link" aria-expanded="true">
                         {{--                        <i class="uil-store"></i>--}}
-                        <span> Quản lý nhân viên </span>
-                        <span class="menu-arrow"></span>
+                        <span> Nhân viên </span>
                     </a>
-                    <ul class="side-nav-second-level mm-collapse" aria-expanded="false" style="height: 0px;">
-                        <li>
-                            <a href="{{ route('admin.employees.index') }}">Nhân viên</a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.employees.resign') }}">Nhân viên nghỉ việc</a>
-                        </li>
-                    </ul>
                 </li>
+                {{--                <li class="side-nav-item">--}}
+                {{--                    <a href="{{ route('admin.employees.resign') }}" class="side-nav-link">Nhân viên nghỉ việc</a>--}}
+                {{--                </li>--}}
                 <li class="side-nav-item">
                     <a href="{{ route('admin.vouchers.index') }}" class="side-nav-link">
                         <span>Voucher</span>
@@ -96,6 +90,11 @@
             <li class="side-nav-item">
                 <a href="{{ route('admin.categories.index') }}" class="side-nav-link">
                     <span>Danh mục</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="{{ route('admin.customers.index') }}" class="side-nav-link">
+                    <span>Khách hàng</span>
                 </a>
             </li>
         </ul>

@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -170,6 +171,16 @@ Route::group([
                 Route::put('/{id}', 'update')->name('update');
                 Route::delete('/{id}', 'destroy')->name('destroy');
             });
+
+            Route::group([
+                'controller' => CustomerController::class,
+                'as' => 'customers.',
+                'prefix' => 'customers',
+            ], function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/api', 'api')->name('api');
+                Route::get('/{id}', 'show')->name('show');
+            });
         });
 
     });
@@ -218,12 +229,12 @@ Route::group([
     'controller' => AppointmentController::class,
 ], function () {
     Route::get('/', 'create')->name('booking');
-    Route::get('/{id}', 'show')->name('show');
     Route::get('/get-services', 'getServices')->name('getServices');
     Route::get('/get-prices', 'getPrices')->name('getPrices');
     Route::get('/get-times', 'getTimes')->name('getTimes');
     Route::post('/', 'store')->name('store');
     Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::get('/{id}', 'show')->name('show');
 });
 
 Route::group([
@@ -275,3 +286,5 @@ Route::post('/{id}/reviews', [ShopController::class, 'review'])->middleware([
     'auth',
     'verified',
 ])->name('products.review');
+
+Route::get('/search', [ShopController::class, 'search'])->name('search');

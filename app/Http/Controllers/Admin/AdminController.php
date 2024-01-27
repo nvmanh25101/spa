@@ -118,6 +118,18 @@ class AdminController extends Controller
 
     public function destroy($adminId)
     {
+        if (auth()->user()->id == $adminId) {
+            return response()->json([
+                'error' => 'Bạn không thể xóa chính mình',
+            ]);
+        }
+        $admin = Admin::query()->findOrFail($adminId);
+        if ($admin->role == AdminType::QUAN_LY) {
+            return response()->json([
+                'error' => 'Bạn không thể xóa quản lý',
+            ]);
+        }
+
         Admin::destroy($adminId);
 
         return response()->json([

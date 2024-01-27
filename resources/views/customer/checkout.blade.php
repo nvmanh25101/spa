@@ -34,10 +34,10 @@
                     <!-- Payment Content-->
                     <div class="tab-pane active" id="payment-information">
                         <div class="row">
-                            <form action="{{ route('orders.update', $order) }}" method="post">
+                            <form action="{{ route('orders.update', $order) }}" method="post" class="col-lg-8">
                                 @csrf
                                 @method('PATCH')
-                                <div class="col-lg-8">
+                                <div class="col-lg-12">
                                     <h4 class="mt-2">Thanh toán</h4>
 
                                     <p class="text-muted mb-4">Chọn phương thức thanh toán.</p>
@@ -105,93 +105,68 @@
 
                             <div class="col-lg-4">
                                 <div class="border p-3 mt-4 mt-lg-0 rounded">
-                                    <h4 class="header-title mb-3">Order Summary</h4>
+                                    <h4 class="header-title mb-3">Tóm tắt đơn hàng</h4>
 
                                     <div class="table-responsive">
                                         <table class="table table-centered mb-0">
                                             <tbody>
-                                            <tr>
+                                            @foreach($order->products as $item)
+                                                <tr class="product">
+                                                    <td>
+                                                        <img src="{{ asset('storage/' . $item->image) }}"
+                                                             alt="contact-img"
+                                                             title="contact-img" class="rounded mr-2" height="48">
+                                                        <p class="m-0 d-inline-block align-middle">
+                                                            <a href="{{ route('customers.product', $item) }}"
+                                                               class="text-body font-weight-semibold">{{ $item->name }}</a>
+                                                            <br>
+                                                            <small>{{ $item->pivot->quantity }} x {{ $item->price }}
+                                                                đ</small>
+                                                        </p>
+                                                    </td>
+                                                    <td class="text-right price">{{ $item->price * $item->pivot->quantity }}
+                                                        đ
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+
+                                            <tr class="text-right">
                                                 <td>
-                                                    <img src="assets/images/products/product-1.jpg"
-                                                         alt="contact-img"
-                                                         title="contact-img" class="rounded mr-2" height="48">
-                                                    <p class="m-0 d-inline-block align-middle">
-                                                        <a href="apps-ecommerce-products-details.html"
-                                                           class="text-body font-weight-semibold">Amazing Modern
-                                                            Chair</a>
-                                                        <br>
-                                                        <small>5 x $148.66</small>
-                                                    </p>
+                                                    <h6 class="m-0">Tổng phụ:</h6>
                                                 </td>
-                                                <td class="text-right">
-                                                    $743.30
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <img src="assets/images/products/product-2.jpg"
-                                                         alt="contact-img"
-                                                         title="contact-img" class="rounded mr-2" height="48">
-                                                    <p class="m-0 d-inline-block align-middle">
-                                                        <a href="apps-ecommerce-products-details.html"
-                                                           class="text-body font-weight-semibold">Designer Awesome
-                                                            Chair</a>
-                                                        <br>
-                                                        <small>2 x $99.00</small>
-                                                    </p>
-                                                </td>
-                                                <td class="text-right">
-                                                    $198.00
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    <img src="assets/images/products/product-3.jpg"
-                                                         alt="contact-img"
-                                                         title="contact-img" class="rounded mr-2" height="48">
-                                                    <p class="m-0 d-inline-block align-middle">
-                                                        <a href="apps-ecommerce-products-details.html"
-                                                           class="text-body font-weight-semibold">Biblio Plastic
-                                                            Armchair</a>
-                                                        <br>
-                                                        <small>1 x $129.99</small>
-                                                    </p>
-                                                </td>
-                                                <td class="text-right">
-                                                    $129.99
+                                                <td class="text-right" id="subPrice">
+                                                    {{ $order->price }}
                                                 </td>
                                             </tr>
                                             <tr class="text-right">
                                                 <td>
-                                                    <h6 class="m-0">Sub Total:</h6>
+                                                    <h6 class="m-0">Phí vận chuyển:</h6>
                                                 </td>
                                                 <td class="text-right">
-                                                    $1071.29
+                                                    Miễn phí
                                                 </td>
                                             </tr>
                                             <tr class="text-right">
                                                 <td>
-                                                    <h6 class="m-0">Shipping:</h6>
+                                                    <h6 class="m-0">Giảm giá:</h6>
                                                 </td>
-                                                <td class="text-right">
-                                                    FREE
+                                                <td class="text-right discount_price">
+                                                    <span id="discount_price">{{ $order->total - $order->price }}</span>
                                                 </td>
                                             </tr>
                                             <tr class="text-right">
                                                 <td>
-                                                    <h5 class="m-0">Total:</h5>
+                                                    <h5 class="m-0">Tổng tiền:</h5>
                                                 </td>
                                                 <td class="text-right font-weight-semibold">
-                                                    $1071.29
+                                                    <span id="totalPrice">{{ $order->total }}</span>
                                                 </td>
                                             </tr>
                                             </tbody>
                                         </table>
                                     </div>
-                                    <!-- end table-responsive -->
-                                </div> <!-- end .border-->
-
-                            </div> <!-- end col -->
+                                </div>
+                            </div><!-- end col -->
                         </div> <!-- end row-->
                     </div>
                     <!-- End Payment Information Content-->

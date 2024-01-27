@@ -30,17 +30,6 @@
                         >
                     </div>
                     <div class="form-group col-4">
-                        <label>Số người</label>
-                        <select class="custom-select mb-3" name="number_people">
-                            <option value="-1" selected>Số lượng*</option>
-                            @for($i=1; $i<=2; $i++)
-                                <option value="{{ $i }}">{{ $i }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col-4">
                         <label>Số điện thoại</label>
                         <input class="form-control validate-control" id="bookingPhone" name="phone_booker"
                                required placeholder="Số điện thoại*"
@@ -59,6 +48,20 @@
                             @endauth
                         >
                     </div>
+                    <div class="form-group col-4 d-none">
+                        <label>Số người</label>
+                        <select class="custom-select mb-3" name="number_people">
+                            <option value="1" selected>Số lượng*</option>
+                            {{--                            <option value="-1" selected>Số lượng*</option>--}}
+                            {{--                            @for($i=1; $i<=2; $i++)--}}
+                            {{--                                <option value="{{ $i }}">{{ $i }}</option>--}}
+                            {{--                            @endfor--}}
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+
+
                 </div>
                 <div class="row">
                     <label>Chọn thời gian</label>
@@ -183,6 +186,22 @@
         });
 
         $('document').ready(function () {
+            function format_price(price) {
+                return parseFloat(price.replace(/\.\d+/g, ''));
+            }
+
+            function format_price_value(price) {
+                let price_value = format_price(price)
+                return price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+            }
+
+            function get_price_from_element(element) {
+                let duration_price = element.children("option:selected").text();
+                let dataArray = duration_price.split('-');
+                let price = dataArray[1].trim();
+                return parseFloat(price.replace(/\D/g, ''));
+            }
+
             let category_element = $('#bookingServiceType');
             let service_element = $('#bookingService');
             let price_element = $('#bookingPrice');
@@ -192,6 +211,8 @@
             let voucher_element = $('#voucher');
             let voucher_error = $('.voucher-error');
             let discount_price_element = $('#discount_price');
+            let number_people_element = $('select[name="number_people"]');
+
             voucher_element.hide();
 
             date_element.on('change', function () {
@@ -279,8 +300,7 @@
                             price_element.empty();
                             price_element.append('<option value="-1">- Chọn -</option>');
                             $.each(data.prices, function (key, value) {
-                                let price = parseFloat(value.price.replace(/[^\d.-]/g, ''))
-                                let price_format = price.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND'
+                                let price_format = format_price_value(value.price);
                                 price_element.append(`<option value="${value.id}">${value.duration}' - ${price_format}</option>`);
                             });
                         }
@@ -294,16 +314,20 @@
             price_element.on('change', function () {
                 voucher_element.show();
 
-                let duration_price = $(this).children("option:selected").text();
-                let dataArray = duration_price.split('-');
-                let price = dataArray[1].trim();
-                let price_value = parseFloat(price.replace(/[^\d.-]/g, ''));
+                let number_people = number_people_element.val();
+
+                let price_value = get_price_from_element($(this));
+
+                if (number_people > 0) {
+                    price_value = price_value * number_people;
+                }
+
                 isNaN(price_value) ? price_value = 0 : price_value;
-                let price_format = price_value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND';
+                let price_format = price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
                 total_price_element.text(price_format);
 
                 voucher_element.on('change', function () {
-                    if ($(this).val() === '-1') {
+                    if ($(this).val() === '') {
                         total_price_element.text(price_format);
                         return;
                     }
@@ -311,8 +335,8 @@
                     let voucher_value = $(this).children("option:selected").data('value');
                     let min_spend = $(this).children("option:selected").data('min-spend');
                     let max_spend = $(this).children("option:selected").data('max-spend');
-                    let min_spend_value = parseFloat(min_spend.replace(/[^\d.-]/g, ''));
-                    let min_spend_format = min_spend_value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND';
+                    let max_spend_format = format_price_value(max_spend);
+                    let min_spend_format = format_price_value(min_spend);
 
                     if (min_spend > price_value) {
                         total_price_element.text(price_format);
@@ -323,7 +347,7 @@
                     }
 
                     let total_price = total_price_element.text();
-                    let total_price_value = parseFloat(total_price.replace(/[^\d.-]/g, ''));
+                    let total_price_value = parseFloat(total_price.replace(/\D/g, ''));
                     isNaN(total_price_value) ? total_price_value = 0 : total_price_value;
                     let total_price_after_discount = 0;
                     let discount = 0;
@@ -331,7 +355,7 @@
                         discount = total_price_value * voucher_value / 100;
                         if (discount > max_spend) {
                             discount = max_spend;
-                            $('#max_discount').text('Tối đa' + max_spend + ' VND');
+                            $('#max_discount').text('Tối đa ' + max_spend_format);
                         }
 
                         if (discount > total_price_value) {
@@ -339,19 +363,47 @@
                         }
 
                         total_price_after_discount = total_price_value - discount;
-                        discount_price_element.text(discount + ' VND');
+                        discount_price_element.text(discount.toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }));
                     } else {
                         if (voucher_value > total_price_value) {
                             voucher_value = total_price_value;
                         }
 
                         total_price_after_discount = total_price_value - voucher_value;
-                        discount_price_element.text(voucher_value + ' VND');
+                        discount_price_element.text(voucher_value.toLocaleString('vi-VN', {
+                            style: 'currency',
+                            currency: 'VND'
+                        }));
                     }
-                    let total_price_after_discount_format = total_price_after_discount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND';
+                    let total_price_after_discount_format = total_price_after_discount.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    });
                     total_price_element.text(total_price_after_discount_format);
                 });
             });
+
+            // number_people_element.on('change', function () {
+            //     let number_people = $(this).val();
+            //     let price_value = get_price_from_element(price_element);
+            //     if (!price_value) {
+            //         return;
+            //     }
+            //     if (number_people > 0) {
+            //         price_value = price_value * number_people;
+            //     }
+            //     let discount_price = discount_price_element.text();
+            //     let discount_price_value = parseFloat(discount_price.replace(/\D/g, ''));
+            //     if (discount_price_value > 0) {
+            //         price_value = price_value - discount_price_value;
+            //     }
+            //     let price_format = price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+            //     total_price_element.text(price_format);
+            // });
+
             @if(session('success'))
             $.notify('{{ session('success') }}', "success");
             @endif

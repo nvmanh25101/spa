@@ -42,9 +42,15 @@ class CartController extends Controller
             ]);
         }
 
-        $cart->products()->attach($request->get('product_id'), [
-            'quantity' => $request->get('quantity')
-        ]);
+        if ($cart->products()->where('product_id', $product_id)->exists()) {
+            $cart->products()->updateExistingPivot($product_id, [
+                'quantity' => $quantity + $cart->products()->where('product_id', $product_id)->first()->pivot->quantity
+            ]);
+        } else {
+            $cart->products()->attach($product_id, [
+                'quantity' => $quantity
+            ]);
+        }
 
         return redirect()->route('cart.index')->with([
             'success' => 'Thêm sản phẩm vào giỏ hàng thành công'

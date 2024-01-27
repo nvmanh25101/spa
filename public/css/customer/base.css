@@ -3,7 +3,7 @@ html, body {
 }
 
 :root {
-    --background-primary: rgb(143, 116, 21);
+    --background-primary: rgb(153, 118, 37);
     --text-primary: rgb(212, 172, 80);
     --background-navbar: #000000;
     --background: #343a40;
@@ -92,3 +92,59 @@ html, body {
     height: 240px;
     margin-top: 96px;
 }
+
+.sub-search,
+.ui-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    color: #aab8c5;
+    background-color: #343a40;
+    width: 240px;
+    border-top: 2px solid #FFBFBF;
+    z-index: 5;
+}
+
+.sub-search-list,
+.ui-menu {
+    padding: 0;
+    list-style: none;
+}
+
+.sub-search-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    padding: 8px;
+    color: #aab8c5;
+    background-color: #343a40;
+}
+
+.sub-search-link:hover {
+    background-color: var(--background-primary);
+    color: #FFFFFF;
+}
+
+.sub-search-link__img {
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+}
+
+.sub-search-link__name {
+    font-size: 16px;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-align: left;
+    margin-right: 4px;
+}
+
+.sub-search-link__price {
+    justify-content: flex-end;
+}
+

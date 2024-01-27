@@ -28,6 +28,7 @@
                                            class="active"
                                         @endif
                                     >Tất cả</a>
+                                </li>
                                 @foreach($categories as $category)
                                     <li>
                                         <a href="{{ route('customers.products', ['category' => $category]) }}"
@@ -42,6 +43,23 @@
                     </div>
                 </li>
             </ul>
+        </div>
+        <div class="shop-element right" id="search">
+            <div class="app-search dropdown">
+                <form action="{{ route('customers.products') }}">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm..." name="q" id="top-search">
+                        <span class="mdi mdi-magnify search-icon"></span>
+                        <div class="input-group-append">
+                            <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="sub-search">
+                    <ul class="sub-search-list">
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <div class="product-collection-grid product-grid bd-bottom">
@@ -75,4 +93,30 @@
 @push('js')
     <script type="text/javascript" src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('js/main_product.js') }}"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script>
+        $('document').ready(function () {
+            $("#search").autocomplete({
+                source: '{{ route('search') }}'
+            }).autocomplete("instance")._renderItem = function (ul, item) {
+                let image_src = '{{ asset('storage/' . '__image') }}';
+                image_src = image_src.replace('__image', item.image);
+                let link = '{{ route('customers.product', '__id') }}';
+                link = link.replace('__id', item.id);
+
+                return $("<li class='sub-search-item'>")
+                    .append(`<a href='${link}' class='sub-search-link'>
+                  <img class='sub-search-link__img' src='${image_src}' alt=''>
+                  <h5 class='sub-search-link__name'>
+                    ${item.name}
+                  </h5>
+                  <span class='sub-search-link__price'>
+                  ${item.price}&#8363
+                  </span>
+                </a>`
+                    )
+                    .appendTo(ul);
+            };
+        });
+    </script>
 @endpush

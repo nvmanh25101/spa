@@ -238,8 +238,7 @@
                 let price = sub_price_element.text();
                 let price_value = parseFloat(price.replace(/[^\d]/g, ''));
                 let price_format = price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
-
-                if ($(this).val() === '-1') {
+                if ($(this).val() === '') {
                     total_price_element.text(price_format);
                     discount_price_element.text('');
                     return;

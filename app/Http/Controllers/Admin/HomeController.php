@@ -42,9 +42,14 @@ class HomeController extends Controller
         $voucherCount = Voucher::query()->where('status', VoucherStatusEnum::HOAT_DONG)->count();
         $appointmentCount = Appointment::query()->whereMonth('created_at', $currentMonth)->count();
 
-        $revenue = Order::query()->where('payment_status',
+        $order_revenue = Order::query()->where('payment_status',
             OrderPaymentStatusEnum::DA_THANH_TOAN)
             ->whereMonth('created_at', $currentMonth)->sum('total');
+
+        $appointment_revenue = Appointment::query()->whereMonth('date', $currentMonth)->sum('total_price');
+        $revenue = $order_revenue + $appointment_revenue;
+
+        $top_product = Product::query()->orderBy('sold', 'desc')->take(10)->get();
 
         return view('admin.layouts.home', [
             'customerCount' => $customerCount,
@@ -54,6 +59,7 @@ class HomeController extends Controller
             'voucherCount' => $voucherCount,
             'appointmentCount' => $appointmentCount,
             'revenue' => $revenue,
+            'top_product' => $top_product,
         ]);
     }
 

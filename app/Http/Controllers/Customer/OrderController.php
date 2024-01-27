@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Customer;
 use App\Enums\OrderPaymentEnum;
 use App\Enums\VoucherApplyTypeEnum;
 use App\Enums\VoucherStatusEnum;
+use App\Events\NewOrderReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\CheckoutRequest;
 use App\Http\Requests\Customer\OrderRequest;
@@ -90,16 +91,17 @@ class OrderController extends Controller
                 Product::query()->where('id', $product->id)->increment('sold', $product->pivot->quantity);
             }
             $cart->products()->detach();
+
+            event(new NewOrderReceived($order));
             DB::commit();
+            return redirect()->route('orders.edit', $order->id)->with([
+                'success' => 'Đặt hàng thành công'
+            ]);
         } catch (Exception $e) {
             DB::rollBack();
 
             return response()->json(['error' => 'Transaction failed.']);
         }
-
-        return redirect()->route('orders.edit', $order->id)->with([
-            'success' => 'Đặt hàng thành công'
-        ]);
     }
 
     public function edit($id)

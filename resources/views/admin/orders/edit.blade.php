@@ -62,15 +62,17 @@
                         <label>Nhân viên vận chuyển</label>
                         <select class="form-control" name="admin_id">
                             <option value="{{ null }}">-- Chọn nhân viên --</option>
-                            @foreach($employees as $employee)
-                                <option value="{{ $employee->id }}"
-                                        @if($order->admin_id === $employee->id)
-                                            selected
-                                    @endif
-                                >
-                                    {{ $employee->name }}
-                                </option>
-                            @endforeach
+                            @if($employees)
+                                @foreach($employees as $employee)
+                                    <option value="{{ $employee->id }}"
+                                            @if($order->admin_id === $employee->id)
+                                                selected
+                                        @endif
+                                    >
+                                        {{ $employee->name }}
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>
@@ -112,7 +114,7 @@
                     <label class="col-3 col-form-label">Voucher</label>
                     <div class="col-9">
                         <input type="text" class="form-control" name="voucher" id="voucher" disabled
-                               value="{{ $order->voucher->name }}">
+                               value="{{ $order->voucher->name ?? '' }}">
                     </div>
                     <div class="voucher-error text-danger"></div>
 

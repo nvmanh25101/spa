@@ -35,7 +35,11 @@
                     <select class="form-control" name="applicable_type">
                         <option value="-1">Chọn</option>
                         @foreach($arrVoucherApplyType as $option => $value)
-                            <option value="{{ $value }}">
+                            <option value="{{ $value }}"
+                                    @if(old('applicable_type') === $value)
+                                        selected
+                                @endif
+                            >
                                 {{ $option }}
                             </option>
                         @endforeach
@@ -46,7 +50,11 @@
                     <select class="form-control" name="type">
                         <option value="-1">Chọn</option>
                         @foreach($arrVoucherType as $option => $value)
-                            <option value="{{ $value }}">
+                            <option value="{{ $value }}"
+                                    @if(old('type') === $value)
+                                        selected
+                                @endif
+                            >
                                 {{ $option }}
                             </option>
                         @endforeach

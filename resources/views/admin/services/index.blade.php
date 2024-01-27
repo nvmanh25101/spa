@@ -20,7 +20,7 @@
         <a href="{{ route('admin.times.index') }}" class="btn btn-outline-primary">Thiết lập khung giờ đặt lịch</a>
 
 
-        <table id="data-table" class="table table-striped dt-responsive nowrap w-100">
+        <table id="data-table" class="table table-hover dt-responsive nowrap w-100">
             <thead>
             <tr>
                 <th>#</th>

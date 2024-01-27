@@ -215,7 +215,7 @@
 
                                                         @if($item->status === $value)
                                                             <span
-                                                                class="badge badge-{{ $class }} p-1">{{ OrderStatusEnum::getKeyByValue($value) }}</span>
+                                                                class="badge badge-{{ $class }} p-1">{{ AppointmentStatusEnum::getKeyByValue($value) }}</span>
                                                         @endif
                                                     @endforeach
                                                 </td>
@@ -224,7 +224,7 @@
                                                     <a href="{{ route('reservations.show', $item) }}"
                                                        class="btn btn-sm btn-primary">Xem chi
                                                         tiết</a>
-                                                    @if($item->status === OrderStatusEnum::CHO_XAC_NHAN)
+                                                    @if($item->status === AppointmentStatusEnum::CHO_XAC_NHAN)
                                                         <form action="{{ route('reservations.destroy', $item) }}"
                                                               class="d-inline-block"
                                                               method="post">

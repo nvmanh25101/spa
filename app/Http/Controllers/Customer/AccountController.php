@@ -17,7 +17,7 @@ class AccountController extends Controller
 
     public function edit($id)
     {
-        $account = Customer::query()->with(['orders', 'reservations'])->findOrFail($id);
+        $account = Customer::query()->with(['orders', 'appointments'])->findOrFail($id);
         $orders = $account->orders()->orderByDesc('id')->paginate(15);
         $reservations = $account->appointments()->orderByDesc('id')->paginate(5);
 

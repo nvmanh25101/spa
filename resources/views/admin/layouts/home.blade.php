@@ -41,7 +41,7 @@
                             </div>
                             <h5 class="text-muted font-weight-normal mt-0" title="Average Revenue">Doanh thu của
                                 tháng</h5>
-                            <h3 class="mt-3 mb-3">{{ $revenue }} đ</h3>
+                            <h3 class="mt-3 mb-3">{{ number_format($revenue) }} đ</h3>
                         </div> <!-- end card-body-->
                     </div> <!-- end card-->
                 </div> <!-- end col-->
@@ -104,32 +104,30 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xl-6 col-lg-12 order-lg-2 order-xl-1">
+        <div class="col-xl-12 col-lg-12 order-lg-2 order-xl-1">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="header-title mt-2">Top sản phẩm bán</h4>
+                    <h4 class="header-title mt-2">Top sản phẩm bán chạy</h4>
 
                     <div class="table-responsive">
                         <table class="table table-centered table-nowrap table-hover mb-0">
                             <tbody>
-                            <tr>
-                                <td>
-                                    <h5 class="font-14 my-1 font-weight-normal">ASOS Ridley High Waist</h5>
-                                    <span class="text-muted font-13">07 April 2018</span>
-                                </td>
-                                <td>
-                                    <h5 class="font-14 my-1 font-weight-normal">$79.49</h5>
-                                    <span class="text-muted font-13">Price</span>
-                                </td>
-                                <td>
-                                    <h5 class="font-14 my-1 font-weight-normal">82</h5>
-                                    <span class="text-muted font-13">Quantity</span>
-                                </td>
-                                <td>
-                                    <h5 class="font-14 my-1 font-weight-normal">$6,518.18</h5>
-                                    <span class="text-muted font-13">Amount</span>
-                                </td>
-                            </tr>
+                            @foreach($top_product as $product)
+                                <tr>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal">{{ $product->name }}</h5>
+                                        <span class="text-muted font-13">{{ $product->created_at }}</span>
+                                    </td>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal">{{ $product->price_format  }}</h5>
+                                        <span class="text-muted font-13">Giá</span>
+                                    </td>
+                                    <td>
+                                        <h5 class="font-14 my-1 font-weight-normal">{{ $product->sold }}</h5>
+                                        <span class="text-muted font-13">Số lượng bán</span>
+                                    </td>
+                                </tr>
+                            @endforeach
                             </tbody>
                         </table>
                     </div> <!-- end table-responsive-->

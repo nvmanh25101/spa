@@ -34,6 +34,37 @@
 <script src="{{ asset('bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('js/vendor.min.js') }}"></script>
 <script src="{{ asset('js/app.min.js') }}"></script>
+<script src="{{ asset('js/notify.min.js') }}"></script>
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script>
+    let notifications = $('.simplebar-content');
+    let icon = $('.noti-icon-badge');
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    let pusher = new Pusher('45126cb6d1fed70c47a3', {
+        cluster: 'ap1',
+        encrypted: true,
+    });
+
+    let channel = pusher.subscribe('orders');
+    channel.bind('new-order', function (data) {
+        let existingNotifications = notifications.html();
+        let url = '{{ route('admin.orders.edit', '_id') }}';
+        url = url.replace('_id', data.order.id);
+        let newNotificationHtml = `
+             <a href="${url}" class="dropdown-item notify-item">
+                <div class="notify-icon bg-primary">
+                    <i class="mdi mdi-comment-account-outline"></i>
+                </div>
+                <p class="notify-details">${data.message}</p>
+            </a>
+        `;
+        notifications.html(newNotificationHtml + existingNotifications);
+        icon.removeClass('d-none');
+        $.notify(`${data.message}`, "success");
+    });
+</script>
 @stack('js')
 </body>
 

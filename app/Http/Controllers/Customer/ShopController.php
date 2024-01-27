@@ -52,19 +52,37 @@ class ShopController extends Controller
 
     public function products(Request $request)
     {
+        $keyword = '';
+
+        if ($request->query('q')) {
+            $keyword = $request->query('q');
+        }
+        
         $category_filter = $request->query('category');
         $categories = Category::query()->where('status', '=', StatusEnum::HOAT_DONG)
             ->where('type', '=', TypeEnum::SAN_PHAM)
             ->get(['id', 'name']);
 
+        $productsQuery = Product::query()
+            ->where('status', '=', ProductStatusEnum::HOAT_DONG)
+            ->where('name', 'like', '%'.$keyword.'%');
+
         if ($category_filter) {
-            $category = Category::query()->where('id', $request->query('category'))->get();
-            $products = Product::query()->whereBelongsTo($category)->where('status', '=',
-                ProductStatusEnum::HOAT_DONG)->simplePaginate(12);
-        } else {
-            $products = Product::query()->where('status', '=',
-                ProductStatusEnum::HOAT_DONG)->simplePaginate(12);
+            $productsQuery->whereHas('category', function ($query) use ($category_filter) {
+                $query->where('id', $category_filter);
+            });
         }
+
+        $products = $productsQuery->simplePaginate(12);
+//        if ($category_filter) {
+//            $category = Category::query()->where('id', $category_filter)->get();
+//            $products = Product::query()->whereBelongsTo($category)->where('name', 'like',
+//                '%'.$keyword.'%')->where('status', '=',
+//                ProductStatusEnum::HOAT_DONG)->simplePaginate(12);
+//        } else {
+//            $products = Product::query()->where('name', 'like', '%'.$keyword.'%')->where('status', '=',
+//                ProductStatusEnum::HOAT_DONG)->simplePaginate(12);
+//        }
 
         return view('customer.products', [
             'categories' => $categories,
@@ -76,7 +94,7 @@ class ShopController extends Controller
     {
         $product = Product::query()->findOrFail($id);
         $reviews = $product->reviews()->with('customer')->simplePaginate(5);
-        
+
         if (auth()->user()) {
             $order_count = Order::whereHas('products', function ($query) use ($id) {
                 $query->where('products.id', $id);
@@ -118,5 +136,24 @@ class ShopController extends Controller
         ]);
 
         return redirect()->route('customers.product', $product)->with('success', 'Đánh giá sản phẩm thành công');
+    }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->query('q');
+        $products = Product::query()->where('name', 'like', '%'.$keyword.'%')->get();
+
+        $arr = [];
+        foreach ($products as $product) {
+            $arr[] = [
+                'id' => $product->id,
+                'name' => $product->name,
+                'image' => $product->image,
+                'price' => $product->price,
+                'url' => route('customers.product', $product)
+            ];
+        }
+
+        return response()->json($arr);
     }
 }

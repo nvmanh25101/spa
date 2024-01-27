@@ -45,7 +45,18 @@ class AuthController extends Controller
     public function verifyEmail(EmailVerificationRequest $request)
     {
         $request->fulfill();
+        Auth::guard('customer')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
 
+        return redirect()->route('login');
+    }
+
+    public function logout(Request $request)
+    {
+        Auth::guard('customer')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         return redirect()->route('customers.home');
     }
 
@@ -56,14 +67,6 @@ class AuthController extends Controller
             return redirect()->route('customers.home');
         }
         return redirect()->back()->withErrors(['message' => 'Email hoặc Password không chính xác']);
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::guard('customer')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        return redirect()->route('customers.home');
     }
 
     public function resend(Request $request)

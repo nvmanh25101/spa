@@ -56,4 +56,9 @@ class Customer extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Review::class);
     }
+
+    public function getRevenueAttribute(): float
+    {
+        return $this->orders->sum('total');
+    }
 }

@@ -16,7 +16,7 @@
     </div>
 
     <div class="col-12">
-        <table id="data-table" class="table table-striped dt-responsive nowrap w-100">
+        <table id="data-table" class="table table-hover table-centered mb-0 dt-responsive nowrap w-100">
             <thead>
             <tr>
                 <th>#</th>

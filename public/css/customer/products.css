@@ -157,3 +157,22 @@ body {
     position: relative;
     top: -7px;
 }
+
+.btn-primary {
+    background-color: var(--background-primary);
+    border-color: var(--background-primary);
+    height: 38px;
+}
+
+.btn-primary:hover {
+    background-color: rgb(126, 98, 30);
+    border-color: var(--background-primary);
+}
+
+#top-search {
+    width: 70%;
+}
+
+.element-review .r-desc {
+    color: #aab8c5;
+}
