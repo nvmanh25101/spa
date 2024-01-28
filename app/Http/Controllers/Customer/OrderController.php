@@ -29,7 +29,6 @@ class OrderController extends Controller
     public function index()
     {
         $cart = Cart::query()->where('customer_id', auth()->id())->first();
-
         $vouchers = Voucher::query()->where('status', '=', VoucherStatusEnum::HOAT_DONG)
             ->where('applicable_type', VoucherApplyTypeEnum::SAN_PHAM)
             ->where('start_date', '<=', now())

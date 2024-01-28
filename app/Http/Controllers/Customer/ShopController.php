@@ -57,7 +57,7 @@ class ShopController extends Controller
         if ($request->query('q')) {
             $keyword = $request->query('q');
         }
-        
+
         $category_filter = $request->query('category');
         $categories = Category::query()->where('status', '=', StatusEnum::HOAT_DONG)
             ->where('type', '=', TypeEnum::SAN_PHAM)
