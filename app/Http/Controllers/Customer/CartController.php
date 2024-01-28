@@ -18,8 +18,13 @@ class CartController extends Controller
 
     public function index()
     {
-        $cart = Cart::query()->where('customer_id', auth()->id())->first();
 
+        $cart = Cart::query()->where('customer_id', auth()->id())->first();
+        if (!$cart) {
+            $cart = Cart::query()->create([
+                'customer_id' => auth()->id()
+            ]);
+        }
         return view('customer.cart', [
             'cart' => $cart,
         ]);

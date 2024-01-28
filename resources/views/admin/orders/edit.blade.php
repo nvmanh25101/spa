@@ -21,8 +21,18 @@
                     </div>
                     <div class="form-group">
                         <label>Hình thức thanh toán</label>
-                        <input type="text" class="form-control" name="payment_method" readonly
-                               value="{{ OrderPaymentEnum::getKeyByValue($order->payment_method)  }}">
+                        <select class="form-control" name="status">
+                            <option value="{{ null }}">-- Chưa thanh toán --</option>
+                            @foreach($arrOrderPayment as $option => $value)
+                                <option value="{{ $value }}"
+                                        @if($order->payment_method === $value)
+                                            selected
+                                        @endif
+                                >
+                                    {{ $option }}
+                                </option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="col-6">

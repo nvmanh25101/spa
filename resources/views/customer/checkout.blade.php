@@ -151,7 +151,7 @@
                                                     <h6 class="m-0">Giảm giá:</h6>
                                                 </td>
                                                 <td class="text-right discount_price">
-                                                    <span id="discount_price">{{ $order->total - $order->price }}</span>
+                                                    <span id="discount_price">{{ $order->price - $order->total }}</span>
                                                 </td>
                                             </tr>
                                             <tr class="text-right">
@@ -192,67 +192,14 @@
             updateTotalPrice();
 
             function updateTotalPrice() {
-                let total = 0;
+                let total = total_price_element.text();
 
-                $(".product").each(function () {
-                    let price = parseFloat($(this).find(".price").text().replace(/[^\d]/g, ''));
-                    total += price;
-                });
+
                 let formattedPrice = total.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
-                sub_price_element.text(formattedPrice);
                 total_price_element.text(formattedPrice);
             }
 
-            voucher_element.on('change', function () {
-                let price = sub_price_element.text();
-                let price_value = parseFloat(price.replace(/[^\d]/g, ''));
-                let price_format = price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
 
-                if ($(this).val() === '-1') {
-                    total_price_element.text(price_format);
-                    discount_price_element.text('');
-                    return;
-                }
-                let voucher_type = $(this).children("option:selected").data('type');
-                let voucher_value = $(this).children("option:selected").data('value');
-                let min_spend = $(this).children("option:selected").data('min-spend');
-                let max_spend = $(this).children("option:selected").data('max-spend');
-                let min_spend_value = parseFloat(min_spend.replace(/[^\d.-]/g, ''));
-                let min_spend_format = min_spend_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'})
-
-                if (min_spend > price_value) {
-                    total_price_element.text(price_format);
-                    alert_element.text('Voucher này chỉ áp dụng cho đơn hàng từ ' + min_spend_format + ' trở lên');
-                    return;
-                } else {
-                    alert_element.text('Sử dụng voucher để giảm giá !');
-                }
-
-                let total_price = total_price_element.text();
-                let total_price_value = parseFloat(total_price.replace(/[^\d]/g, ''));
-                isNaN(total_price_value) ? total_price_value = 0 : total_price_value;
-                let total_price_after_discount = 0;
-                let discount = 0;
-                if (voucher_type === {{ VoucherTypeEnum::PHAN_TRAM }}) {
-                    discount = total_price_value * voucher_value / 100;
-                    if (discount > max_spend) {
-                        discount = max_spend;
-                        $('#max_discount').text('Tối đa: ' + max_spend + ' đ');
-
-                    }
-                    total_price_after_discount = total_price_value - discount;
-                    discount_price_element.text(discount + ' đ');
-                } else {
-                    total_price_after_discount = total_price_value - voucher_value;
-                    discount_price_element.text(voucher_value + ' đ');
-                }
-                let total_price_after_discount_format = total_price_after_discount.toLocaleString('vi-VN', {
-                    style: 'currency',
-                    currency: 'VND'
-                })
-                total_price_element.text(total_price_after_discount_format);
-            });
-        });
         @if(session('success'))
         $.notify('{{ session('success') }}', "success");
         @endif

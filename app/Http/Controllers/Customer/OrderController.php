@@ -29,7 +29,9 @@ class OrderController extends Controller
     public function index()
     {
         $cart = Cart::query()->where('customer_id', auth()->id())->first();
-
+        if($cart->products->isEmpty()) {
+            return redirect()->back()->with(['error' => "Không có sản phẩm nào"]);
+        }
         $vouchers = Voucher::query()->where('status', '=', VoucherStatusEnum::HOAT_DONG)
             ->where('applicable_type', VoucherApplyTypeEnum::SAN_PHAM)
             ->where('start_date', '<=', now())
@@ -76,6 +78,9 @@ class OrderController extends Controller
         $arr['price'] = $price;
         $arr['total'] = checkVoucher($request, Order::class, VoucherApplyTypeEnum::SAN_PHAM,
             $price) ?? $price;
+        if(is_string($arr['total'])) {
+            return redirect()->back()->with(['error' => $arr['total']]);
+        }
         $arr['shipping_fee'] = 0;
         DB::beginTransaction();
         try {
@@ -99,7 +104,7 @@ class OrderController extends Controller
             ]);
         } catch (Exception $e) {
             DB::rollBack();
-
+            // dd($e);
             return response()->json(['error' => 'Transaction failed.']);
         }
     }
