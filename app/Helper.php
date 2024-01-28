@@ -25,25 +25,30 @@ if (!function_exists('getDurationPrice')) {
 if (!function_exists('checkVoucher')) {
     function checkVoucher($request, $model, $applicable_type, $price)
     {
+        $error = '';
         if ($request->validated()['voucher_id']) {
             $voucher = Voucher::query()->find($request->validated()['voucher_id']);
             if (!Auth::guard('customer')->check()) {
-                return redirect()->back()->with('error', 'Bạn cần đăng nhập để sử dụng voucher');
+                $error = 'Bạn cần đăng nhập để sử dụng voucher';
+                return $error;
             }
 
             $count = $model::query()->where('customer_id', Auth::guard('customer')->user()->id)
                 ->where('voucher_id', $voucher->id)
                 ->count();
             if ($count > $voucher->uses_per_customer) {
-                return redirect()->back()->with('error', 'Bạn đã sử dụng hết lượt sử dụng voucher');
+                $error = 'Bạn đã sử dụng hết lượt sử dụng voucher';
+                return $error;
             }
 
             if ($voucher->applicable_type !== $applicable_type) {
-                return redirect()->back()->with('error', 'Voucher không hợp lệ');
+                $error = 'Voucher không hợp lệ';
+                return $error;
             }
 
             if ($voucher->uses_per_voucher < 1) {
-                return redirect()->back()->with('error', 'Voucher đã hết lượt sử dụng');
+                $error = 'Voucher đã hết lượt sử dụng';
+                return $error;
             }
 
             if ($voucher->type === VoucherTypeEnum::PHAN_TRAM) {
@@ -64,12 +69,13 @@ if (!function_exists('checkVoucher')) {
                 }
                 $total = $price - $voucher_value;
             }
-            
+
             --$voucher->uses_per_voucher;
             $voucher->save();
 
             return $total;
         }
+        
         return $price;
     }
 }

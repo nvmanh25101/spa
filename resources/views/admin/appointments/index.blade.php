@@ -16,7 +16,7 @@
     </div>
 
     <div class="col-12">
-        <a href="{{ route('admin.appointments.create') }}" class="btn btn-outline-primary">Thêm mới</a>
+        {{-- <a href="{{ route('admin.appointments.create') }}" class="btn btn-outline-primary">Thêm mới</a> --}}
 
         <table id="data-table" class="table table-hover dt-responsive nowrap w-100">
             <thead>

@@ -211,7 +211,8 @@
     </div>
 @endsection
 @push('js')
-    <script type="text/javascript" src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>\
+    <script type="text/javascript" src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
+    <script src="{{ asset('js/notify.min.js') }}"></script>
     <script>
         $(document).ready(function () {
             let voucher_element = $('#voucher');
@@ -282,6 +283,13 @@
                 })
                 total_price_element.text(total_price_after_discount_format);
             });
+
+            @if(session('success'))
+            $.notify('{{ session('success') }}', "success");
+            @endif
+            @if(session('error'))
+            $.notify('{{ session('error') }}', "error");
+            @endif
         });
     </script>
 @endpush

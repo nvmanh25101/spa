@@ -40,9 +40,14 @@ class ShopController extends Controller
         } else {
             $category = $categories->first();
         }
+        if($category) {
 
-        $services = Service::query()->with('priceServices')->whereBelongsTo($category)->where('status', '=',
+            $services = Service::query()->with('priceServices')->whereBelongsTo($category)->where('status', '=',
             ServiceStatusEnum::HOAT_DONG)->get();
+        }else {
+            $services = [];
+
+        }
 
         return view('customer.services', [
             'categories' => $categories,
