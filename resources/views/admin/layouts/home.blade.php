@@ -41,7 +41,7 @@
                             </div>
                             <h5 class="text-muted font-weight-normal mt-0" title="Average Revenue">Doanh thu của
                                 tháng</h5>
-                            <h3 class="mt-3 mb-3">{{ $revenue }} đ</h3>
+                            <h3 class="mt-3 mb-3">{{ number_format($revenue) }} đ</h3>
                         </div> <!-- end card-body-->
                     </div> <!-- end card-->
                 </div> <!-- end col-->

@@ -7,7 +7,7 @@
     <div class="col-12">
         <a href="{{ route('admin.blogs.create') }}" class="btn btn-outline-primary">Thêm mới</a>
 
-        <table id="data-table" class="table table-striped dt-responsive nowrap w-100">
+        <table id="data-table" class="table table-hover dt-responsive nowrap w-100">
             <thead>
             <tr>
                 <th>#</th>

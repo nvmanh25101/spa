@@ -41,6 +41,11 @@
                         <span>Voucher</span>
                     </a>
                 </li>
+                <li class="side-nav-item">
+                    <a href="{{ route('admin.statistic') }}" class="side-nav-link">
+                        <span>Thống kê</span>
+                    </a>
+                </li>
             @endif
             <li class="side-nav-item">
                 <a href="{{ route('admin.reservations.index') }}" class="side-nav-link">
@@ -70,6 +75,11 @@
             <li class="side-nav-item">
                 <a href="{{ route('admin.categories.index') }}" class="side-nav-link">
                     <span>Danh mục</span>
+                </a>
+            </li>
+            <li class="side-nav-item">
+                <a href="{{ route('admin.customers.index') }}" class="side-nav-link">
+                    <span>Khách hàng</span>
                 </a>
             </li>
         </ul>

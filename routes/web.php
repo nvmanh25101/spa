@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\HomeController;
 use App\Http\Controllers\Admin\TourController;
 use App\Http\Controllers\Admin\ServiceController;
@@ -153,7 +154,18 @@ Route::group([
                 Route::put('/{id}', 'update')->name('update');
                 Route::delete('/{id}', 'destroy')->name('destroy');
             });
+
+            Route::group([
+                'controller' => CustomerController::class,
+                'as' => 'customers.',
+                'prefix' => 'customers',
+            ], function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('/api', 'api')->name('api');
+                Route::get('/{id}', 'show')->name('show');
+            });
         });
+
     });
 });
 
@@ -200,10 +212,10 @@ Route::group([
     Route::get('/{id}/booking', 'create')->name('booking');
     Route::get('/', 'index')->name('index');
     Route::get('/{id}/edit', 'edit')->name('edit');
-    Route::get('/{id}', 'show')->name('show');
-    Route::patch('/{id}', 'update')->name('update');
+    Route::patch('/{id}/checkout', 'update')->name('update');
     Route::post('/', 'store')->name('store');
     Route::delete('/{id}', 'destroy')->name('destroy');
+    Route::get('/account/orders/{id}', 'show')->name('show');
 });
 
 Route::group([

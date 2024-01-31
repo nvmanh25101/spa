@@ -3,11 +3,11 @@
     <link href="{{ asset('datatables/datatables.min.css') }}" rel="stylesheet" type="text/css">
 @endpush
 @section('content')
-    <div class="col-4 d-flex mb-1 mt-4">
+    <div class="col-4 d-flex mb-1">
         <label>Trạng thái</label>
         <select class="form-control" id="select-status">
             <option value="-1">Tất cả</option>
-            @foreach($arrTourStatus as $key => $value)
+            @foreach($arrAppointmentStatus as $key => $value)
                 <option value="{{ $value }}">
                     {{ $key }}
                 </option>
@@ -16,21 +16,18 @@
     </div>
 
     <div class="col-12">
-        <a href="{{ route('admin.tours.create') }}" class="btn btn-outline-primary">Thêm mới</a>
-        <a href="{{ route('admin.tours.create_schedule') }}" class="btn btn-outline-primary">Lịch trình</a>
+        {{-- <a href="{{ route('admin.appointments.create') }}" class="btn btn-outline-primary">Thêm mới</a> --}}
 
         <table id="data-table" class="table table-hover dt-responsive nowrap w-100">
             <thead>
             <tr>
                 <th>#</th>
-                <th>Tên</th>
-                <th>Code</th>
+                <th>Tên khách hàng</th>
+                <th>Số điện thoại</th>
+                <th>Dịch vụ</th>
                 <th>Thời gian</th>
-                <th>Danh mục</th>
                 <th>Trạng thái</th>
                 <th>Sửa</th>
-                <th>Xóa</th>
-                <th>Lịch trình</th>
             </tr>
             </thead>
         </table>
@@ -49,54 +46,17 @@
                 dom: 'BRSlrtip',
                 processing: true,
                 serverSide: true,
-                ajax: '{{ route('admin.tours.api') }}',
-                "columnDefs": [{
-                    "targets": 1,
-                    "data": "name",
-                    "render": function (data, type, row, meta) {
-                        return type === 'display' && data.length > 40 ?
-                            '<span title="' + data + '">' + data.substr(0, 38) + '...</span>' :
-                            data;
-                    }
-                },
-                    {
-                        "targets": 2,
-                        "data": "code",
-                        "render": function (data, type, row, meta) {
-                            return type === 'display' && data.length > 20 ?
-                                '<span title="' + data + '">' + data.substr(0, 18) + '...</span>' :
-                                data;
-                        }
-                    }],
+                ajax: '{{ route('admin.appointments.api') }}',
+                "order": [[0, "desc"]],
                 columns: [
                     {data: 'id', name: 'id'},
-                    {data: 'name', name: 'name'},
-                    {data: 'code', name: 'code'},
-                    {data: 'duration', name: 'duration'},
-                    {data: 'category_name', name: 'category_name'},
+                    {data: 'name_booker', name: 'name_booker'},
+                    {data: 'phone_booker', name: 'phone_booker'},
+                    {data: 'service_name', name: 'service_name'},
+                    {data: 'datetime', name: 'datetime'},
                     {data: 'status', name: 'status'},
                     {
                         data: 'edit',
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row, meta) {
-                            return `<a class="btn btn-primary" href="${data}"><i class='mdi mdi-pencil'></i></a>`;
-                        }
-                    },
-                    {
-                        data: 'destroy',
-                        orderable: false,
-                        searchable: false,
-                        render: function (data, type, row, meta) {
-                            return `<form action="${data}" method="post">
-                                            @csrf
-                            @method('DELETE')
-                            <button type="button" class="btn-delete btn btn-danger"><i class='mdi mdi-delete'></i></button>
-                        </form>`;
-                        }
-                    },
-                    {
-                        data: 'schedule',
                         orderable: false,
                         searchable: false,
                         render: function (data, type, row, meta) {

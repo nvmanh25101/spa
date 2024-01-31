@@ -37,7 +37,7 @@
                             <form action="{{ route('reservations.update', $reservation) }}" method="post">
                                 @csrf
                                 @method('PATCH')
-                                <div class="col-lg-8">
+                                <div class="col-lg-12">
                                     <h4 class="mt-2">Thanh toán</h4>
 
                                     <p class="text-muted mb-4">Chọn phương thức thanh toán.</p>

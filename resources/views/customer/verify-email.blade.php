@@ -24,7 +24,9 @@
                     </p>
                 </div>
                 <div class="form-group mb-0 text-center">
-                    <a href="{{ route('verification.send') }}" class="btn btn-primary">Gửi lại link xác thực</a>
+                    <form action="{{ route('verification.send') }}">
+                        <button class="btn btn-primary">Gửi lại link xác thực</button>
+                    </form>
                 </div>
             </div>
         </div>

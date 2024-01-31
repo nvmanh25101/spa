@@ -42,7 +42,11 @@
                     </div>
                     <div class="form-group">
                         <label>Trạng thái thanh toán</label>
-                        <select class="form-control" name="payment_status">
+                        <select class="form-control" name="payment_status"
+                                @if(Auth::guard('admin')->user()->role === AdminType::VAN_CHUYEN)
+                                    readonly
+                            @endif
+                        >
                             @foreach($arrOrderPaymentStatus as $option => $value)
                                 <option value="{{ $value }}"
                                         @if($reservation->payment_status === $value)
