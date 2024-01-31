@@ -186,9 +186,9 @@ Route::group([
     'controller' => ShopController::class,
 ], function () {
     Route::get('/', 'index')->name('home');
-    Route::get('/tours/{id}', 'tour')->name('tour');
     Route::get('/blogs', 'blogs')->name('blogs');
     Route::get('/blog/{id}', 'blog')->name('blog');
+    Route::get('/{id}', 'tour')->name('tour');
 });
 //'middleware' => ['auth', 'verified']
 

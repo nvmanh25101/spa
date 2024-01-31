@@ -92,10 +92,11 @@ html, body {
     margin-top: 96px;
 }
 #carouselExampleFade {
-    margin-top: 112px;
+    margin-top: 90px;
 }
 
 .dropdown-menu {
     top: 56px !important;
     left: -30px !important;
 }
+

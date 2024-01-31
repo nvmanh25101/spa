@@ -30,6 +30,7 @@ class ShopController extends Controller
     public function index(Request $request)
     {
         $category_filter = $request->query('category');
+        $destination_filter = $request->query('destination');
         $categories = Category::query()->where('status', '=', StatusEnum::HOAT_DONG)
             ->get(['id', 'name']);
 
@@ -37,6 +38,10 @@ class ShopController extends Controller
             $category = Category::query()->where('id', $request->query('category'))->get();
             $tours = Tour::query()->whereBelongsTo($category)->where('status', '=',
                 TourStatusEnum::HOAT_DONG)->simplePaginate(12);
+        } elseif ($destination_filter) {
+            $tours = Tour::query()->whereHas('destinations', function ($query) use ($destination_filter) {
+                $query->where('name', 'like', '%' . $destination_filter . '%');
+            })->where('status', '=', TourStatusEnum::HOAT_DONG)->simplePaginate(12);
         } else {
             $tours = Tour::query()->where('status', '=',
                 TourStatusEnum::HOAT_DONG)->simplePaginate(12);

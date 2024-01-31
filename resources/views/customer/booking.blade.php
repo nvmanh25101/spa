@@ -215,16 +215,37 @@
             let alert_element = $('.alert-warning');
             let sub_price_element = $('#subPrice');
             let total_price_element = $('#totalPrice');
+            let number_people_element = $('select[name="number_people"]');
 
             updateTotalPrice();
 
+            number_people_element.on('change', function () {
+                let number_people = $(this).val();
+                let price = sub_price_element.text();
+                let price_value = parseInt(price.replace(/[^\d]/g, ''));
+                if (number_people > 0) {
+                    price_value = price_value * number_people;
+                }
+                let discount_price = discount_price_element.text();
+                let discount_price_value = parseInt(discount_price.replace(/[^\d]/g, ''));
+                if (discount_price_value > 0) {
+                    price_value = price_value - discount_price_value;
+                }
+                let price_format = price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+                sub_price_element.text(price_format);
+            });
+
             function updateTotalPrice() {
                 let total = 0;
-
+                let number_people = number_people_element.val();
                 $(".product").each(function () {
                     let price = parseInt($(this).find(".price").text());
+                    if (number_people > 0) {
+                        price = price * number_people;
+                    }
                     total += price;
                 });
+
                 let formattedPrice = total.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
                 sub_price_element.text(formattedPrice);
                 total_price_element.text(formattedPrice);
@@ -234,8 +255,7 @@
                 let price = sub_price_element.text();
                 let price_value = parseInt(price.replace(/[^\d]/g, ''));
                 let price_format = price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
-
-                if ($(this).val() === '-1') {
+                if ($(this).val() == '') {
                     total_price_element.text(price_format);
                     discount_price_element.text('');
                     return;

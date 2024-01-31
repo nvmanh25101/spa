@@ -6,7 +6,7 @@
     <div class="content-page">
         <div class="content">
             @include('customer.layouts.navbar')
-                <div id="carouselExampleFade" class="carousel slide carousel-fade container" data-ride="carousel">
+                <div id="carouselExampleFade" class="carousel slide carousel-fade" data-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item">
                             <img class="d-block img-fluid" src="https://www.vietnambooking.com/wp-content/uploads/2023/01/tour-chao-thu-banner-09092023.png" alt="First slide">
