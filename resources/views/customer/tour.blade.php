@@ -48,7 +48,7 @@
                         <tr>
                             <td><i class="fa fa-map-marker-alt" aria-hidden="true"></i>
                                 @foreach($tour->destinations as $item)
-                                    {{ $item->name }}
+                                    {{ $item->name }},
                                 @endforeach
                             </td>
                             <td><i class="fa fa-clock-o" aria-hidden="true"></i> <span>{{ $tour->duration }}</span></td>
