@@ -76,16 +76,16 @@ class VnpayController extends Controller
 
     public function return(Request $request)
     {
-        if (request('vnp_TransactionStatus') == 00) {
+        if ($request->query('vnp_TransactionStatus') == 00) {
+
             $order_code = request('vnp_TxnRef');
             $order = Order::where('code', $order_code)->first();
-            if ($order->payment_type == OrderPaymentEnum::CHUYEN_KHOAN) {
-                $order->update([
-                    'payment_method' => OrderPaymentEnum::CHUYEN_KHOAN,
-                    'payment_status' => OrderPaymentStatusEnum::DA_THANH_TOAN,
-                ]);
-                return view('customer.thankyou');
-            }
+            $order->update([
+                'payment_method' => OrderPaymentEnum::CHUYEN_KHOAN,
+                'payment_status' => OrderPaymentStatusEnum::DA_THANH_TOAN,
+            ]);
+
+            return view('customer.thankyou');
         }
         return redirect()->route('orders.index')->with(['error' => 'Thanh toán đơn hàng không thành công! Vui lòng thử lại!']);
     }

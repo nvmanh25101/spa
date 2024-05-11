@@ -1,20 +1,20 @@
-@php use App\Enums\AdminType; @endphp
+@php use App\Enums\AdminType;use App\Enums\NotiType; @endphp
 <div class="navbar-custom">
     <ul class="list-unstyled topbar-right-menu float-right mb-0">
         <li class="dropdown notification-list">
             <a class="nav-link dropdown-toggle arrow-none" data-toggle="dropdown" href="#" role="button"
                aria-haspopup="false" aria-expanded="false">
                 <i class="dripicons-bell noti-icon"></i>
-                <span class="noti-icon-badge d-none"></span>
+                <span class="noti-icon-badge @if($arrNoti->isEmpty()) d-none @endif"></span>
             </a>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-animated dropdown-lg">
                 <!-- item-->
                 <div class="dropdown-item noti-title">
                     <h5 class="m-0">
                         <span class="float-right">
-                             <a href="javascript: void(0);" class="text-dark">
-                                <small>Xóa tất cả</small>
-                             </a>
+{{--                             <a href="javascript: void(0);" class="text-dark">--}}
+                            {{--                                <small>Xóa tất cả</small>--}}
+                            {{--                             </a>--}}
                         </span>Thông báo
                     </h5>
                 </div>
@@ -29,7 +29,20 @@
                             <div class="simplebar-offset" style="right: 0px; bottom: 0px;">
                                 <div class="simplebar-content-wrapper" style="height: auto; overflow: hidden scroll;">
                                     <div class="simplebar-content" style="padding: 0px;">
-                                        <!-- item-->
+                                        @foreach($arrNoti as $noti)
+                                            <a href="@if($noti->type == NotiType::DON_HANG)
+                                                    {{ route('admin.orders.edit', $noti->object_id) }}
+                                                @elseif($noti->type == NotiType::LICH)
+                                                    {{ route('admin.appointments.edit', $noti->object_id) }}
+                                                @endif
+                                                "
+                                               class="dropdown-item notify-item">
+                                                <div class="notify-icon bg-primary">
+                                                    <i class="mdi mdi-comment-account-outline"></i>
+                                                </div>
+                                                <p class="notify-details">{{ $noti->message }}</p>
+                                            </a>
+                                        @endforeach
                                     </div>
                                 </div>
                             </div>

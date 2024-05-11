@@ -61,8 +61,35 @@
             </a>
         `;
         notifications.html(newNotificationHtml + existingNotifications);
+        console.log(newNotificationHtml)
         icon.removeClass('d-none');
         $.notify(`${data.message}`, "success");
+    });
+
+    let channel2 = pusher.subscribe('appointments');
+    channel2.bind('new-appointment', function (data) {
+        console.log(1);
+        let existingNotifications = notifications.html();
+        let url = '{{ route('admin.appointments.edit', '_id') }}';
+        url = url.replace('_id', data.appointment.id);
+        let newNotificationHtml = `
+             <a href="${url}" class="dropdown-item notify-item">
+                <div class="notify-icon bg-primary">
+                    <i class="mdi mdi-comment-account-outline"></i>
+                </div>
+                <p class="notify-details">${data.message}</p>
+            </a>
+        `;
+        notifications.html(newNotificationHtml + existingNotifications);
+
+        icon.removeClass('d-none');
+        $.notify(`${data.message}`, "success");
+    });
+
+    $(document).ready(function () {
+        $('.notify-item').click(function () {
+            this.remove();
+        });
     });
 </script>
 @stack('js')

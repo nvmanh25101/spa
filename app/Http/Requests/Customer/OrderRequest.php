@@ -22,6 +22,7 @@ class OrderRequest extends FormRequest
             "phone_receiver" => [
                 'required',
                 'string',
+                'min:10',
                 'max:15',
             ],
             "address" => [
@@ -56,6 +57,7 @@ class OrderRequest extends FormRequest
             'phone.required' => ':attribute không được để trống',
             'phone.string' => ':attribute phải là chuỗi',
             'phone.max' => ':attribute không được vượt quá 15 ký tự',
+            'phone.min' => ':attribute ít nhất 10 ký tự',
             'address.required' => ':attribute không được để trống',
             'address.string' => ':attribute phải là chuỗi',
             'address.max' => ':attribute không được vượt quá 255 ký tự',

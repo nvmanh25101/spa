@@ -92,7 +92,7 @@
                                         </div> <!-- end col -->
                                         <div class="col-sm-6">
                                             <div class="text-sm-right">
-                                                <button class="btn btn-danger" type="submit">
+                                                <button class="btn submit" type="submit">
                                                     <i class="mdi mdi-cash-multiple mr-1"></i> Hoàn thành
                                                 </button>
                                             </div>
@@ -200,11 +200,11 @@
             }
 
 
-        @if(session('success'))
-        $.notify('{{ session('success') }}', "success");
-        @endif
-        @if(session('error'))
-        $.notify('{{ session('error') }}', "error");
+            @if(session('success'))
+            $.notify('{{ session('success') }}', "success");
+            @endif
+            @if(session('error'))
+            $.notify('{{ session('error') }}', "error");
         @endif
     </script>
 @endpush

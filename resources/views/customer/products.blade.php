@@ -44,11 +44,11 @@
                 </li>
             </ul>
         </div>
-        <div class="shop-element right" id="search">
+        <div class="shop-element right">
             <div class="app-search dropdown">
                 <form action="{{ route('customers.products') }}">
                     <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Tìm kiếm..." name="q" id="top-search">
+                        <input type="text" class="form-control" placeholder="Tìm kiếm..." name="q" id="search">
                         <span class="mdi mdi-magnify search-icon"></span>
                         <div class="input-group-append">
                             <button class="btn btn-primary" type="submit">Tìm kiếm</button>

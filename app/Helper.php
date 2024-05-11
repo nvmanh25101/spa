@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\VoucherTypeEnum;
+use App\Models\Notification;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,33 +23,29 @@ if (!function_exists('getDurationPrice')) {
         }, $durations, $prices);
     }
 }
+
 if (!function_exists('checkVoucher')) {
     function checkVoucher($request, $model, $applicable_type, $price)
     {
-        $error = '';
         if ($request->validated()['voucher_id']) {
             $voucher = Voucher::query()->find($request->validated()['voucher_id']);
             if (!Auth::guard('customer')->check()) {
-                $error = 'Bạn cần đăng nhập để sử dụng voucher';
-                return $error;
+                return 'Bạn cần đăng nhập để sử dụng voucher';
             }
 
             $count = $model::query()->where('customer_id', Auth::guard('customer')->user()->id)
                 ->where('voucher_id', $voucher->id)
                 ->count();
             if ($count > $voucher->uses_per_customer) {
-                $error = 'Bạn đã sử dụng hết lượt sử dụng voucher';
-                return $error;
+                return 'Bạn đã sử dụng hết lượt sử dụng voucher';
             }
 
             if ($voucher->applicable_type !== $applicable_type) {
-                $error = 'Voucher không hợp lệ';
-                return $error;
+                return 'Voucher không hợp lệ';
             }
 
             if ($voucher->uses_per_voucher < 1) {
-                $error = 'Voucher đã hết lượt sử dụng';
-                return $error;
+                return 'Voucher đã hết lượt sử dụng';
             }
 
             if ($voucher->type === VoucherTypeEnum::PHAN_TRAM) {
@@ -70,12 +67,17 @@ if (!function_exists('checkVoucher')) {
                 $total = $price - $voucher_value;
             }
 
-            --$voucher->uses_per_voucher;
-            $voucher->save();
-
-            return $total;
+            return (float) $total;
         }
-        
-        return $price;
+
+        return (float) $price;
+    }
+}
+
+if (!function_exists('deleteNoti')) {
+    function deleteNoti($id, $type)
+    {
+        $noti = Notification::query()->where('object_id', $id)->where('type', $type)->first();
+        $noti?->delete();
     }
 }

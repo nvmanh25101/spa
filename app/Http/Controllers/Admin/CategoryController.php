@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Category\StoreRequest;
 use App\Http\Requests\Admin\Category\UpdateRequest;
 use App\Models\Category;
+use App\Models\Notification;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
@@ -28,6 +29,9 @@ class CategoryController extends Controller
 
         $arrCategoryStatus = StatusEnum::getArrayView();
         view()->share('arrCategoryStatus', $arrCategoryStatus);
+
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()

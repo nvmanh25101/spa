@@ -18,7 +18,8 @@
     <div class="col-12 mt-4">
         <h4 class="text-uppercase">Điền Thông tin</h4>
         <div class="mt-4">
-            <form id="booking-form" method="post" action="{{ route('reservations.store') }}">
+            <form id="booking-form" method="post" action="{{ route('reservations.store') }}" class="needs-validation"
+                  novalidate>
                 @csrf
                 <div class="row">
                     <div class="form-group col-4">
@@ -51,7 +52,7 @@
                     <div class="form-group col-4 d-none">
                         <label>Số người</label>
                         <select class="custom-select mb-3" name="number_people">
-                            <option value="1" selected>Số lượng*</option>
+                            <option value="1" selected>1</option>
                             {{--                            <option value="-1" selected>Số lượng*</option>--}}
                             {{--                            @for($i=1; $i<=2; $i++)--}}
                             {{--                                <option value="{{ $i }}">{{ $i }}</option>--}}
@@ -60,16 +61,12 @@
                     </div>
                 </div>
                 <div class="row">
-
-
-                </div>
-                <div class="row">
                     <label>Chọn thời gian</label>
                     <div class="form-group col-4">
-                        <input class="form-control" id="date" name="date" placeholder="Chọn ngày">
+                        <input class="form-control" id="date" name="date" placeholder="Chọn ngày" required>
                     </div>
                     <div class="form-group col-4">
-                        <select class="form-control" name="time_id">
+                        <select class="form-control" name="time_id" required>
                             <option value="-1">- Chọn giờ check-in -</option>
                             @foreach($times as $time)
                                 <option value="{{ $time->id }}">{{ $time->time_display }}</option>
@@ -135,35 +132,36 @@
                               spellcheck="false"></textarea>
                 </div>
 
-                <div class="form-group voucher d-flex align-items-center">
-                    <label>Voucher</label>
-                    @auth
-                        <select class="form-control validate-control" id="voucher"
-                                name="voucher_id">
-                            <option value="{{ null }}">- Chọn voucher -</option>
-                            @if($vouchers)
-                                @foreach($vouchers as $item)
-                                    <option value="{{ $item->id }}"
-                                            data-value="{{ $item->value }}"
-                                            data-type="{{ $item->type }}"
-                                            data-min-spend="{{ $item->min_spend }}"
-                                            data-max-spend="{{ $item->max_spend }}"
-                                    >{{ $item->name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                    @endauth
-                    @guest
-                        <a href="{{ route('login') }}" class="btn btn-login">Đăng nhập để sử dụng voucher</a>
-                    @endguest
-                </div>
-                <div class="voucher-error text-danger"></div>
+                {{--                <div class="form-group voucher d-flex align-items-center">--}}
+                {{--                    <label>Voucher</label>--}}
+                {{--                    @auth--}}
+                {{--                        <select class="form-control validate-control" id="voucher"--}}
+                {{--                                name="voucher_id">--}}
+                {{--                            <option value="{{ null }}">- Chọn voucher -</option>--}}
+                {{--                            @if($vouchers)--}}
+                {{--                                @foreach($vouchers as $item)--}}
+                {{--                                    <option value="{{ $item->id }}"--}}
+                {{--                                            data-value="{{ $item->value }}"--}}
+                {{--                                            data-type="{{ $item->type }}"--}}
+                {{--                                            data-min-spend="{{ $item->min_spend }}"--}}
+                {{--                                            data-max-spend="{{ $item->max_spend }}"--}}
+                {{--                                    >{{ $item->name }}</option>--}}
+                {{--                                @endforeach--}}
+                {{--                            @endif--}}
+                {{--                        </select>--}}
+                {{--                    @endauth--}}
+                {{--                    @guest--}}
+                {{--                        <input name="voucher_id" value="{{ null }}" hidden>--}}
+                {{--                        <a href="{{ route('login') }}" class="btn btn-login">Đăng nhập để sử dụng voucher</a>--}}
+                {{--                    @endguest--}}
+                {{--                </div>--}}
+                {{--                <div class="voucher-error text-danger"></div>--}}
                 <hr>
-                <div class="discount_price mb-2">
-                    <span>Giảm giá</span>
-                    <span id="discount_price"></span>
-                    <span id="max_discount"></span>
-                </div>
+                {{--                <div class="discount_price mb-2">--}}
+                {{--                    <span>Giảm giá</span>--}}
+                {{--                    <span id="discount_price"></span>--}}
+                {{--                    <span id="max_discount"></span>--}}
+                {{--                </div>--}}
                 <div class="total_price">
                     <span>Tổng</span>
                     <span id="total_price"></span>
@@ -341,6 +339,7 @@
                     if (min_spend > price_value) {
                         total_price_element.text(price_format);
                         voucher_error.text('Voucher này chỉ áp dụng cho đơn hàng từ ' + min_spend_format + ' trở lên');
+                        voucher_element.val('');
                         return;
                     } else {
                         voucher_error.text('');

@@ -148,3 +148,24 @@ html, body {
     justify-content: flex-end;
 }
 
+
+.submit {
+    border: var(--background-primary) 1px solid;
+    color: #FFFFFF;
+    font-size: 1.1rem;
+    float: right;
+    padding: 0.5rem 2.2rem;
+    background-color: var(--background-primary);
+}
+
+.submit:hover,
+.btn-login:hover {
+    color: #FFFFFF;
+    background-color: #8b691a;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    background-color: var(--background-primary);
+    border: var(--background-primary) 1px solid;
+    color: #FFFFFF;
+}

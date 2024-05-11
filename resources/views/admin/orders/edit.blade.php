@@ -1,4 +1,4 @@
-@php use App\Enums\AdminRoleEnum;use App\Enums\AdminType;use App\Enums\OrderPaymentEnum;use Illuminate\Support\Facades\Auth; @endphp
+@php use App\Enums\AdminType;use App\Enums\OrderPaymentStatusEnum;use App\Enums\OrderStatusEnum;use Illuminate\Support\Facades\Auth; @endphp
 @extends('admin.layouts.master')
 @section('content')
     <div class="col-12">
@@ -9,6 +9,11 @@
             @method('PATCH')
             <div class="row">
                 <div class="col-6">
+                    <div class="form-group">
+                        <label>Mã đơn</label>
+                        <input type="text" class="form-control" readonly
+                               value="{{ $order->code }}">
+                    </div>
                     <div class="form-group">
                         <label>Khách hàng</label>
                         <input type="text" class="form-control" name="name_receiver" readonly
@@ -21,13 +26,17 @@
                     </div>
                     <div class="form-group">
                         <label>Hình thức thanh toán</label>
-                        <select class="form-control" name="status">
+                        <select class="form-control" name="status"
+                                @if(Auth::guard('admin')->user()->role === AdminType::VAN_CHUYEN || $order->payment_status === OrderStatusEnum::DA_HUY)
+                                    disabled
+                            @endif
+                        >
                             <option value="{{ null }}">-- Chưa thanh toán --</option>
                             @foreach($arrOrderPayment as $option => $value)
                                 <option value="{{ $value }}"
                                         @if($order->payment_method === $value)
                                             selected
-                                        @endif
+                                    @endif
                                 >
                                     {{ $option }}
                                 </option>
@@ -38,8 +47,15 @@
                 <div class="col-6">
                     <div class="form-group">
                         <label>Trạng thái đơn hàng</label>
-                        <select class="form-control" name="status">
+                        <select class="form-control" name="status"
+                                @if($order->status === OrderStatusEnum::HOAN_THANH || $order->status === OrderStatusEnum::DA_HUY)
+                                    disabled
+                            @endif
+                        >
                             @foreach($arrOrderStatus as $option => $value)
+                                @if($value < $order->status)
+                                    @continue
+                                @endif
                                 <option value="{{ $value }}"
                                         @if($order->status === $value)
                                             selected
@@ -53,11 +69,12 @@
                     <div class="form-group">
                         <label>Trạng thái thanh toán</label>
                         <select class="form-control" name="payment_status"
-                                @if(Auth::guard('admin')->user()->role === AdminType::VAN_CHUYEN)
-                                    readonly
+                                @if(Auth::guard('admin')->user()->role === AdminType::VAN_CHUYEN || $order->payment_status === OrderPaymentStatusEnum::DA_THANH_TOAN)
+                                    disabled
                             @endif
                         >
                             @foreach($arrOrderPaymentStatus as $option => $value)
+
                                 <option value="{{ $value }}"
                                         @if($order->payment_status === $value)
                                             selected
@@ -70,7 +87,11 @@
                     </div>
                     <div class="form-group">
                         <label>Nhân viên vận chuyển</label>
-                        <select class="form-control" name="admin_id">
+                        <select class="form-control" name="admin_id"
+                                @if(Auth::guard('admin')->user()->role === AdminType::VAN_CHUYEN || $order->payment_status === OrderStatusEnum::DA_HUY)
+                                    disabled
+                            @endif
+                        >
                             <option value="{{ null }}">-- Chọn nhân viên --</option>
                             @if($employees)
                                 @foreach($employees as $employee)
@@ -84,6 +105,11 @@
                                 @endforeach
                             @endif
                         </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Thời điểm giao hàng cho đơn vị vận chuyển</label>
+                        <input type="text" class="form-control" readonly
+                               value="{{ $order->delivery_date }}">
                     </div>
                 </div>
             </div>

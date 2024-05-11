@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Blog\StoreRequest;
 use App\Http\Requests\Admin\Blog\UpdateRequest;
 use App\Models\Blog;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -21,6 +22,9 @@ class BlogController extends Controller
         $pageTitle = explode('@', $pageTitle)[1];
         view()->share('ControllerName', $this->ControllerName);
         view()->share('pageTitle', $pageTitle);
+
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()

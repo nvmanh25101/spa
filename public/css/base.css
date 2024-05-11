@@ -24,3 +24,19 @@ input[type=number] {
 .star-out i {
     font-size: 1.4rem;
 }
+
+.btn-outline-primary,
+a,
+.delete-price {
+    color: #ffc700;
+    border-color: #ffc700;
+}
+
+.delete-price:hover {
+    color: #be9800;
+}
+
+.btn-outline-primary:hover {
+    background-color: #ffc700;
+    color: #1e1e1e;
+}

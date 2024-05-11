@@ -6,7 +6,7 @@
 @section('content')
 
     <div class="main__container">
-        <select id="days" class="select-statistics">
+        <select id="days" class="select-statistics form-control">
             <option>Chọn</option>
             <option value="7">7 ngày gần nhất</option>
             <option value="30">30 ngày gần nhất</option>

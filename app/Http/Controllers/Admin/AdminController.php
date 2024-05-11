@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Admin\StoreRequest;
 use App\Http\Requests\Admin\Admin\UpdateRequest;
 use App\Models\Admin;
+use App\Models\Notification;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
@@ -28,6 +29,9 @@ class AdminController extends Controller
 
         $arrAdminStatus = AdminStatusEnum::getArrayView();
         view()->share('arrAdminStatus', $arrAdminStatus);
+
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()

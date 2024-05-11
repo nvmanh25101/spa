@@ -8,6 +8,7 @@ use App\Enums\VoucherTypeEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Voucher\StoreRequest;
 use App\Http\Requests\Admin\Voucher\UpdateRequest;
+use App\Models\Notification;
 use App\Models\Voucher;
 use Illuminate\Support\Facades\Route;
 use Yajra\DataTables\DataTables;
@@ -31,6 +32,9 @@ class VoucherController extends Controller
 
         $arrVoucherStatus = VoucherStatusEnum::getArrayView();
         view()->share('arrVoucherStatus', $arrVoucherStatus);
+
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()
@@ -42,7 +46,7 @@ class VoucherController extends Controller
     {
         return DataTables::of(Voucher::query())
             ->editColumn('applicable_type', function ($object) {
-                return VoucherApplyTypeEnum::getKeyByValue($object->type);
+                return VoucherApplyTypeEnum::getKeyByValue($object->applicable_type);
             })
             ->editColumn('value', function ($object) {
                 return number_format($object->value).($object->type === VoucherTypeEnum::PHAN_TRAM ? '%' : ' VNĐ');

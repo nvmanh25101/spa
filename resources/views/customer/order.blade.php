@@ -106,7 +106,7 @@
                                         </div> <!-- end col -->
                                         <div class="col-sm-6">
                                             <div class="text-sm-right">
-                                                <button class="btn btn-danger" type="submit">
+                                                <button class="btn submit" type="submit">
                                                     <i class="mdi mdi-truck-fast mr-1"></i> Đặt hàng
                                                 </button>
                                             </div>

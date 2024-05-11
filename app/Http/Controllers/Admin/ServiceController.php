@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Service\StoreRequest;
 use App\Http\Requests\Admin\Service\UpdateRequest;
 use App\Models\Category;
+use App\Models\Notification;
 use App\Models\PriceService;
 use App\Models\Service;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +28,9 @@ class ServiceController extends Controller
 
         $arrServiceStatus = ServiceStatusEnum::getArrayView();
         view()->share('arrServiceStatus', $arrServiceStatus);
+
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()

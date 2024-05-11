@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AppointmentStatusEnum;
 use App\Enums\OrderPaymentStatusEnum;
 use App\Enums\OrderStatusEnum;
 use App\Enums\VoucherStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Customer;
+use App\Models\Notification;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Service;
@@ -28,6 +30,8 @@ class HomeController extends Controller
         view()->share('ControllerName', $this->ControllerName);
         view()->share('pageTitle', $pageTitle);
 
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()
@@ -46,7 +50,8 @@ class HomeController extends Controller
             OrderPaymentStatusEnum::DA_THANH_TOAN)
             ->whereMonth('created_at', $currentMonth)->sum('total');
 
-        $appointment_revenue = Appointment::query()->whereMonth('date', $currentMonth)->sum('total_price');
+        $appointment_revenue = Appointment::query()->where('status',
+            AppointmentStatusEnum::XAC_NHAN)->whereMonth('date', $currentMonth)->sum('total_price');
         $revenue = $order_revenue + $appointment_revenue;
 
         $top_product = Product::query()->orderBy('sold', 'desc')->take(10)->get();

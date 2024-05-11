@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\OrderStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -27,6 +28,7 @@ class Order extends Model
         'status',
         'payment_method',
         'payment_status',
+        'delivered_at',
     ];
 
     public static function destroy($ids)
@@ -60,8 +62,20 @@ class Order extends Model
         return $this->belongsTo(Cart::class);
     }
 
-    public function getOrderDateAttribute(): string
+    public function getOrderDateAttribute(): ?string
     {
-        return $this->created_at->format('d/m/Y');
+        $date = Carbon::create($this->created_at)->format('d/m/Y H:i:s');
+
+        return $date ?: null;
+    }
+
+    public function getDeliveryDateAttribute()
+    {
+        if ($this->delivered_at === null) {
+            return null;
+        }
+        $date = Carbon::create($this->delivered_at)->format('d/m/Y H:i:s');
+
+        return $date ?: null;
     }
 }

@@ -1,3 +1,4 @@
+@php use App\Enums\VoucherTypeEnum; @endphp
 @extends('admin.layouts.master')
 @push('css')
     <link rel="stylesheet" href="{{ asset('flatpicker/flatpickr.min.css') }}">
@@ -100,7 +101,7 @@
                             <td>{{ $appointment->service->category->name }}</td>
                             <td>{{ $appointment->service->name }}</td>
                             <td>{{ $appointment->duration }}</td>
-                            <td>{{ $appointment->price_display }}</td>
+                            <td class="price">{{ $appointment->price_display }}</td>
                         </tr>
                         </tbody>
                     </table>
@@ -114,11 +115,15 @@
             <div class="col-4 form-horizontal float-end">
                 <div class="form-group row">
                     <label class="col-3 col-form-label">Voucher</label>
-                    <select class="col-9 form-control" name="voucher_id" id="voucher" disabled>
+                    <select class="col-9 form-control" name="voucher_id" id="voucher">
                         @if($appointment->customer)
-                            <option value="-1">-- Chọn voucher --</option>
+                            <option value={{ null }}>-- Chọn voucher --</option>
                             @foreach($vouchers as $voucher)
                                 <option value="{{ $voucher->id }}"
+                                        data-value="{{ $voucher->value }}"
+                                        data-type="{{ $voucher->type }}"
+                                        data-min-spend="{{ $voucher->min_spend }}"
+                                        data-max-spend="{{ $voucher->max_spend }}"
                                         @if($appointment->voucher_id === $voucher->id)
                                             selected
                                     @endif
@@ -135,11 +140,11 @@
 
                 <div class="form-group row">
                     <span class="col-3 col-form-label">Tiền giảm voucher</span>
-                    <span class="col-9 d-flex align-items-center fs-4">{{ $appointment->price - $appointment->total_price }}VND</span>
+                    <span class="col-9 d-flex align-items-center fs-4" id="discount_price">{{ $appointment->price - $appointment->total_price }}VND</span>
                 </div>
                 <div class="form-group row">
                     <span class="col-3 col-form-label">Tổng tiền</span>
-                    <span class="col-9 d-flex align-items-center fs-4">{{ $appointment->total_price }}VND</span>
+                    <span class="col-9 d-flex align-items-center fs-4" id="total_price">{{ $appointment->total_price }}VND</span>
                 </div>
                 <button class="btn btn-primary mb-3" id="btn-submit" type="submit">Cập nhật</button>
             </div>
@@ -157,72 +162,94 @@
                 dateFormat: "d-m-Y",
                 defaultDate: "{{ $appointment->date_display }}"
             });
+            let voucher_element = $('#voucher');
+            let total_price_element = $('#total_price');
+            let price_element = $('.price');
+            let voucher_error = $('.voucher-error');
+            let discount_price_element = $('#discount_price');
 
-            {{--let price_element = $('#bookingPrice');--}}
-            {{--let total_price_element = $('#total_price');--}}
-            {{--let voucher_element = $('#voucher');--}}
-            {{--let voucher_error = $('.voucher-error');--}}
-            {{--let discount_price_element = $('#discount_price');--}}
+            function format_price(price) {
+                return parseFloat(price.replace(/,/g, ''));
+            }
 
-            {{--price_element.on('change', function () {--}}
-            {{--    voucher_element.show();--}}
+            function format_price_value(price) {
+                let price_value = format_price(price)
+                return price_value.toLocaleString('vi-VN', {style: 'currency', currency: 'VND'});
+            }
 
-            {{--    let duration_price = $(this).children("option:selected").text();--}}
-            {{--    let dataArray = duration_price.split('-');--}}
-            {{--    let price = dataArray[1].trim();--}}
-            {{--    let price_value = parseFloat(price.replace(/[^\d.-]/g, ''));--}}
-            {{--    isNaN(price_value) ? price_value = 0 : price_value;--}}
-            {{--    let price_format = price_value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND';--}}
-            {{--    total_price_element.text(price_format);--}}
+            voucher_element.on('change', function () {
+                let price = price_element.text();
+                console.log('price', price);
+                let price_value = format_price(price);
+                let price_format = format_price_value(price);
 
-            {{--    voucher_element.on('change', function () {--}}
-            {{--        if ($(this).val() === '-1') {--}}
-            {{--            total_price_element.text(price_format);--}}
-            {{--            return;--}}
-            {{--        }--}}
-            {{--        let voucher_type = $(this).children("option:selected").data('type');--}}
-            {{--        let voucher_value = $(this).children("option:selected").data('value');--}}
-            {{--        let min_spend = $(this).children("option:selected").data('min-spend');--}}
-            {{--        let max_spend = $(this).children("option:selected").data('max-spend');--}}
-            {{--        let min_spend_value = parseFloat(min_spend.replace(/[^\d.-]/g, ''));--}}
-            {{--        let min_spend_format = min_spend_value.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND';--}}
+                if ($(this).val() === '') {
+                    total_price_element.text(price_format);
+                    discount_price_element.text('0VND');
+                    return;
+                }
+                let voucher_type = $(this).children("option:selected").data('type');
+                let voucher_value = $(this).children("option:selected").data('value');
+                let min_spend = $(this).children("option:selected").data('min-spend');
+                let max_spend = $(this).children("option:selected").data('max-spend');
+                let max_spend_format = format_price_value(max_spend);
+                let min_spend_format = format_price_value(min_spend);
+                console.log('min_spend', min_spend);
+                console.log('price_value', price_value);
+                if (min_spend > price_value) {
+                    total_price_element.text(price_format);
+                    voucher_error.text('Voucher này chỉ áp dụng cho đơn hàng từ ' + min_spend_format + ' trở lên');
+                    voucher_element.val('');
+                    return;
+                } else {
+                    voucher_error.text('');
+                }
 
-            {{--        if (min_spend > price_value) {--}}
-            {{--            total_price_element.text(price_format);--}}
-            {{--            voucher_error.text('Voucher này chỉ áp dụng cho đơn hàng từ ' + min_spend_format + ' trở lên');--}}
-            {{--            return;--}}
-            {{--        } else {--}}
-            {{--            voucher_error.text('');--}}
-            {{--        }--}}
+                let total_price_after_discount = 0;
+                let discount = 0;
+                if (voucher_type === {{ VoucherTypeEnum::PHAN_TRAM }}) {
+                    console.log('voucher_value', voucher_value);
+                    console.log('total_price_value', price_value);
 
-            {{--        let total_price = total_price_element.text();--}}
-            {{--        let total_price_value = parseFloat(total_price.replace(/[^\d.-]/g, ''));--}}
-            {{--        isNaN(total_price_value) ? total_price_value = 0 : total_price_value;--}}
-            {{--        let total_price_after_discount = 0;--}}
-            {{--        let discount = 0;--}}
-            {{--        if (voucher_type === {{ VoucherTypeEnum::PHAN_TRAM }}) {--}}
-            {{--            discount = total_price_value * voucher_value / 100;--}}
-            {{--            if (discount > max_spend) {--}}
-            {{--                discount = max_spend;--}}
-            {{--                $('#max_discount').text('Tối đa' + max_spend + ' VND');--}}
+                    discount = price_value * voucher_value / 100;
+                    if (discount > max_spend) {
+                        discount = max_spend;
+                        $('#max_discount').text('Tối đa ' + max_spend_format);
+                    }
 
-            {{--            }--}}
-            {{--            total_price_after_discount = total_price_value - discount;--}}
-            {{--            discount_price_element.text(discount + ' VND');--}}
-            {{--        } else {--}}
-            {{--            total_price_after_discount = total_price_value - voucher_value;--}}
-            {{--            discount_price_element.text(voucher_value + ' VND');--}}
-            {{--        }--}}
-            {{--        let total_price_after_discount_format = total_price_after_discount.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,') + ' VND';--}}
-            {{--        total_price_element.text(total_price_after_discount_format);--}}
-            {{--    });--}}
-            {{--});--}}
-            {{--@if(session('success'))--}}
-            {{--$.notify('{{ session('success') }}', "success");--}}
-            {{--@endif--}}
-            {{--@if(session('error'))--}}
-            {{--$.notify('{{ session('error') }}', "error");--}}
-            {{--@endif--}}
+                    if (discount > price_value) {
+                        discount = price_value;
+                    }
+
+                    total_price_after_discount = price_value - discount;
+                    discount_price_element.text(discount.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }));
+                } else {
+                    if (voucher_value > price_value) {
+                        voucher_value = price_value;
+                    }
+
+                    total_price_after_discount = price_value - voucher_value;
+                    discount_price_element.text(voucher_value.toLocaleString('vi-VN', {
+                        style: 'currency',
+                        currency: 'VND'
+                    }));
+                }
+                let total_price_after_discount_format = total_price_after_discount.toLocaleString('vi-VN', {
+                    style: 'currency',
+                    currency: 'VND'
+                });
+                total_price_element.text(total_price_after_discount_format);
+            });
+
+            @if(session('success'))
+            $.notify('{{ session('success') }}', "success");
+            @endif
+            @if(session('error'))
+            $.notify('{{ session('error') }}', "error");
+            @endif
         });
     </script>
 @endpush

@@ -1,10 +1,11 @@
+@php use App\Enums\ProductStatusEnum; @endphp
 @extends('customer.layouts.master')
 @push('css')
     <link rel="stylesheet" href="{{ asset('css/customer/cart.css') }}">
 @endpush
 @section('carousel')
     <div class="text-center text-white d-flex align-items-center position-relative page-header"
-        style="background-image: url(https://laspas.vn/ma-may/wp-content/uploads/sites/5/2018/08/slide-1.jpg);">
+         style="background-image: url(https://laspas.vn/ma-may/wp-content/uploads/sites/5/2018/08/slide-1.jpg);">
         <div class="m-auto">
             <h1 class="font-family-secondary h2 text-uppercase text-center mt-2 mb-3 page-title">
                 Giỏ hàng của bạn
@@ -21,60 +22,63 @@
                         <div class="table-responsive">
                             <table class="table table-borderless table-centered mb-0">
                                 <thead class="thead-light">
-                                    <tr>
-                                        <th>Sản phẩm</th>
-                                        <th>Giá</th>
-                                        <th>Số lượng</th>
-                                        <th>Tổng tiền</th>
-                                        <th style="width: 50px;"></th>
-                                    </tr>
+                                <tr>
+                                    <th>Sản phẩm</th>
+                                    <th>Giá</th>
+                                    <th>Số lượng</th>
+                                    <th>Tổng tiền</th>
+                                    <th style="width: 50px;"></th>
+                                </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($cart->products)
-                                        @foreach ($cart->products as $item)
-                                            <input type="hidden" name="product_id" value="{{ $item->id }}">
-                                            <tr class="product">
-                                                <td>
-                                                    <img src="{{ asset('storage/' . $item->image) }}" alt="contact-img"
-                                                        title="contact-img" class="rounded mr-3" height="64">
-                                                    <p class="m-0 d-inline-block align-middle product-name">
-                                                        <a href="{{ route('customers.product', $item) }}"
-                                                            class="text-body">{{ $item->name }}</a>
-                                                    </p>
-                                                </td>
-                                                <td>
-                                                    <span class="price_unit">{{ $item->price }} đ</span>
-                                                </td>
-                                                <td>
-                                                    <input type="number" min="1"
-                                                        value="{{ $item->pivot->quantity }}" max="{{ $item->quantity }}"
-                                                        class="form-control quantity" placeholder="Qty"
-                                                        style="width: 90px;">
-                                                    @method('put')
-                                                </td>
-                                                <td>
+                                @if ($cart->products)
+                                    @foreach ($cart->products as $item)
+                                        @if($item->status == ProductStatusEnum::NGUNG_HOAT_DONG)
+                                            @continue
+                                        @endif
+                                        <input type="hidden" name="product_id" value="{{ $item->id }}">
+                                        <tr class="product">
+                                            <td>
+                                                <img src="{{ asset('storage/' . $item->image) }}" alt="contact-img"
+                                                     title="contact-img" class="rounded mr-3" height="64">
+                                                <p class="m-0 d-inline-block align-middle product-name">
+                                                    <a href="{{ route('customers.product', $item) }}"
+                                                       class="text-body">{{ $item->name }}</a>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <span class="price_unit">{{ $item->price }} đ</span>
+                                            </td>
+                                            <td>
+                                                <input type="number" min="1"
+                                                       value="{{ $item->pivot->quantity }}" max="{{ $item->quantity }}"
+                                                       class="form-control quantity" placeholder="Qty"
+                                                       style="width: 90px;">
+                                                @method('put')
+                                            </td>
+                                            <td>
                                                     <span class="price">{{ $item->price * $item->pivot->quantity }}
                                                         đ</span>
-                                                </td>
-                                                <td>
-                                                    <form action="{{ route('cart.destroy', $item->pivot->cart_id) }}"
-                                                        method="post">
-                                                        @method('delete')
-                                                        @csrf
-                                                        <input type="hidden" name="product_id"
-                                                            value="{{ $item->pivot->product_id }}">
-                                                        <button type="submit" class="action-icon btn"><i
-                                                                class="mdi mdi-delete"></i></button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
+                                            </td>
+                                            <td>
+                                                <form action="{{ route('cart.destroy', $item->pivot->cart_id) }}"
+                                                      method="post">
+                                                    @method('delete')
+                                                    @csrf
+                                                    <input type="hidden" name="product_id"
+                                                           value="{{ $item->pivot->product_id }}">
+                                                    <button type="submit" class="action-icon btn"><i
+                                                            class="mdi mdi-delete"></i></button>
+                                                </form>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
 
                                 </tbody>
                             </table>
                             <div class="alert alert-danger alert-dismissible bg-danger text-white border-0 fade d-none"
-                                role="alert">
+                                 role="alert">
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
@@ -86,12 +90,12 @@
                         <div class="row mt-4">
                             <div class="col-sm-6">
                                 <a href="{{ route('customers.products') }}"
-                                    class="btn text-muted d-none d-sm-inline-block btn-link font-weight-semibold">
+                                   class="btn text-muted d-none d-sm-inline-block btn-link font-weight-semibold">
                                     <i class="mdi mdi-arrow-left"></i> Tiếp tục mua sắm </a>
                             </div> <!-- end col -->
                             <div class="col-sm-6">
                                 <div class="text-sm-right">
-                                    <a href="{{ route('orders.index') }}" class="btn btn-danger">
+                                    <a href="{{ route('orders.index') }}" class="btn submit">
                                         <i class="mdi mdi-cart-plus mr-1"></i> Đặt hàng </a>
                                 </div>
                             </div> <!-- end col -->
@@ -106,14 +110,14 @@
                             <div class="table-responsive">
                                 <table class="table mb-0">
                                     <tbody>
-                                        <tr>
-                                            <td>Phí vận chuyển :</td>
-                                            <td>Miễn phí</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Tổng tiền :</th>
-                                            <th><span id="totalPrice"></span></th>
-                                        </tr>
+                                    <tr>
+                                        <td>Phí vận chuyển :</td>
+                                        <td>Miễn phí</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tổng tiền :</th>
+                                        <th><span id="totalPrice"></span></th>
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -131,10 +135,10 @@
     <script src="{{ asset('js/notify.min.js') }}"></script>
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             updateTotalPrice();
 
-            $(".quantity").on("input", function() {
+            $(".quantity").on("input", function () {
                 updatePrice($(this));
                 updateTotalPrice();
 
@@ -155,7 +159,7 @@
                         product_id,
                         quantity,
                     },
-                    success: function(response) {
+                    success: function (response) {
                         alert_danger.removeClass("d-none");
                         alert_danger.addClass("show");
                         alert_danger.append(response.error);
@@ -178,7 +182,7 @@
             function updateTotalPrice() {
                 let total = 0;
 
-                $(".product").each(function() {
+                $(".product").each(function () {
                     let price = parseFloat($(this).find(".price").text().replace(/[^\d]/g, ''));
                     total += price;
                 });
@@ -190,10 +194,10 @@
             }
 
             @if (session('success'))
-                $.notify('{{ session('success') }}', "success");
+            $.notify('{{ session('success') }}', "success");
             @endif
             @if (session('error'))
-                $.notify('{{ session('error') }}', "error");
+            $.notify('{{ session('error') }}', "error");
             @endif
         });
     </script>

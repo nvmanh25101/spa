@@ -16,7 +16,7 @@
 @endsection
 @section('content')
     @foreach($blogs as $blog)
-        <div class="blog-list-item">
+        <div class="blog-list-item mb-3">
             <div class="col-md-5 col-sm-6 col-xs-12">
                 <div class="blog-list-info">
                     <div class="blog-tag">
@@ -32,7 +32,7 @@
             </div>
             <div class="col-md-7 col-sm-6 col-xs-12">
                 <div class="blog-img">
-                    <a href="" class="effect-img3 plus-zoom">
+                    <a href="{{ route('customers.blog', $blog) }}" class="effect-img3 plus-zoom">
                         <img src="{{ asset('storage/' . $blog->image) }}" alt="" class="img-reponsive">
                     </a>
                 </div>

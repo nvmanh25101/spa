@@ -9,6 +9,7 @@ final class AppointmentStatusEnum extends Enum
     public const CHO_XAC_NHAN = 0;
     public const XAC_NHAN = 1;
     public const TU_CHOI = 2;
+    public const KHACH_HANG_HUY = 3;
 
 
     public static function getKeyByValue($value): string
@@ -22,6 +23,7 @@ final class AppointmentStatusEnum extends Enum
             'Chờ xác nhận' => self::CHO_XAC_NHAN,
             'Xác nhận' => self::XAC_NHAN,
             'Từ chối' => self::TU_CHOI,
+            'Khách hàng đã hủy' => self::KHACH_HANG_HUY,
         ];
     }
 }

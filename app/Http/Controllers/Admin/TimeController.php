@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Time\StoreRequest;
+use App\Models\Notification;
 use App\Models\Time;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,9 @@ class TimeController extends Controller
         $pageTitle = explode('@', $pageTitle)[1];
         view()->share('ControllerName', $this->ControllerName);
         view()->share('pageTitle', $pageTitle);
+
+        $arrNoti = Notification::query()->get();
+        view()->share('arrNoti', $arrNoti);
     }
 
     public function index()

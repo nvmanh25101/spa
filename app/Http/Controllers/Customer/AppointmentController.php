@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Enums\AppointmentStatusEnum;
 use App\Enums\Category\StatusEnum;
 use App\Enums\Category\TypeEnum;
 use App\Enums\ServiceStatusEnum;
 use App\Enums\VoucherApplyTypeEnum;
 use App\Enums\VoucherStatusEnum;
+use App\Events\NewAppointmentReceived;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Customer\Reservation\StoreRequest;
 use App\Models\Appointment;
@@ -16,8 +18,10 @@ use App\Models\Service;
 use App\Models\Time;
 use App\Models\Voucher;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AppointmentController extends Controller
 {
@@ -69,25 +73,43 @@ class AppointmentController extends Controller
         $arr['date'] = $date;
         $arr['duration'] = $duration;
         $arr['price'] = $price;
+        if (Auth::guard('customer')->check()) {
+            $arr['customer_id'] = Auth::guard('customer')->user()->id ?? null;
 
-        $arr['customer_id'] = Auth::guard('customer')->user()->id;
-
-        $appointment = Appointment::query()->where('customer_id', Auth::guard('customer')->user()->id)
-            ->whereDate('date', $date)
-            ->where('time_id', $request->validated()['time_id'])
-            ->first();
-        if ($appointment) {
-            return redirect()->back()->with('error', 'Bạn đã đặt lịch vào thời gian này');
+            $appointment = Appointment::query()->where('customer_id', Auth::guard('customer')->user()->id)
+                ->whereDate('date', $date)
+                ->where('time_id', $request->validated()['time_id'])
+                ->first();
+            if ($appointment) {
+                return redirect()->back()->with('error', 'Bạn đã đặt lịch vào thời gian này');
+            }
         }
 
         $arr['total_price'] = checkVoucher($request, Appointment::class, VoucherApplyTypeEnum::DICH_VU,
             $price) ?? $price;
 
-        if (Appointment::query()->create($arr)) {
-            return redirect()->back()->with('success', 'Đặt lịch thành công');
+        if (is_string($arr['total_price'])) {
+            return redirect()->back()->with(['error' => $arr['total_price']]);
         }
-        return redirect()->back()->with('error', 'Đặt lịch thất bại');
+        $voucher = Voucher::query()->find($request->validated()['voucher_id']);
+        DB::beginTransaction();
+        try {
+            $appointment = Appointment::query()->create($arr);
 
+            if ($voucher) {
+                --$voucher->uses_per_voucher;
+                $voucher->save();
+            }
+            event(new NewAppointmentReceived($appointment));
+
+            DB::commit();
+
+            return redirect()->back()->with('success', 'Đặt lịch thành công');
+        } catch (Exception $e) {
+            DB::rollBack();
+            // dd($e);
+            return redirect()->back()->with('error', 'Đặt lịch thất bại');
+        }
     }
 
     public function create(Request $request)
@@ -122,7 +144,10 @@ class AppointmentController extends Controller
 
     public function destroy($id)
     {
-        Appointment::destroy($id);
+        $appointment = Appointment::query()->findOrFail($id);
+        $appointment->update([
+            'status' => AppointmentStatusEnum::KHACH_HANG_HUY
+        ]);
 
         return response()->json([
             'success' => 'Hủy thành công',

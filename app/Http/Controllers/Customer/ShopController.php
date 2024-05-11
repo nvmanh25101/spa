@@ -40,11 +40,11 @@ class ShopController extends Controller
         } else {
             $category = $categories->first();
         }
-        if($category) {
+        if ($category) {
 
             $services = Service::query()->with('priceServices')->whereBelongsTo($category)->where('status', '=',
-            ServiceStatusEnum::HOAT_DONG)->get();
-        }else {
+                ServiceStatusEnum::HOAT_DONG)->get();
+        } else {
             $services = [];
 
         }
@@ -146,7 +146,8 @@ class ShopController extends Controller
     public function search(Request $request)
     {
         $keyword = $request->query('q');
-        $products = Product::query()->where('name', 'like', '%'.$keyword.'%')->get();
+        $products = Product::query()->where('name', 'like', '%'.$keyword.'%')->where('status', '=',
+            ProductStatusEnum::HOAT_DONG)->get();
 
         $arr = [];
         foreach ($products as $product) {

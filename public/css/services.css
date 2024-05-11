@@ -9,9 +9,8 @@
 
 #add_price:hover {
     cursor: pointer;
-    color: #1e1e1e;
+    color: #ffc700;
 }
-
 
 .delete-price {
     height: 100%;
@@ -26,5 +25,5 @@
 }
 
 .delete-price:hover {
-    color: #1e1e1e;
+    color: #be9800;
 }

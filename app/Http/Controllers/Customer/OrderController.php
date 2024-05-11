@@ -29,7 +29,7 @@ class OrderController extends Controller
     public function index()
     {
         $cart = Cart::query()->where('customer_id', auth()->id())->first();
-        if($cart->products->isEmpty()) {
+        if ($cart->products->isEmpty()) {
             return redirect()->back()->with(['error' => "Không có sản phẩm nào"]);
         }
         $vouchers = Voucher::query()->where('status', '=', VoucherStatusEnum::HOAT_DONG)
@@ -78,14 +78,15 @@ class OrderController extends Controller
         $arr['price'] = $price;
         $arr['total'] = checkVoucher($request, Order::class, VoucherApplyTypeEnum::SAN_PHAM,
             $price) ?? $price;
-        if(is_string($arr['total'])) {
+        if (is_string($arr['total'])) {
             return redirect()->back()->with(['error' => $arr['total']]);
         }
         $arr['shipping_fee'] = 0;
+
+        $voucher = Voucher::query()->find($request->validated()['voucher_id']);
         DB::beginTransaction();
         try {
             $order = Order::query()->create($arr);
-
             foreach ($cart->products as $product) {
                 $order->products()->attach($product->id, [
                     'name' => $product->name,
@@ -97,15 +98,21 @@ class OrderController extends Controller
             }
             $cart->products()->detach();
 
+            if ($voucher) {
+                --$voucher->uses_per_voucher;
+                $voucher->save();
+            }
+
             event(new NewOrderReceived($order));
             DB::commit();
+
             return redirect()->route('orders.edit', $order->id)->with([
                 'success' => 'Đặt hàng thành công'
             ]);
         } catch (Exception $e) {
             DB::rollBack();
             // dd($e);
-            return response()->json(['error' => 'Transaction failed.']);
+            return redirect()->back()->with(['error' => 'Đặt hàng thất bại.']);
         }
     }
 
@@ -116,7 +123,6 @@ class OrderController extends Controller
         return view('customer.checkout', [
             'order' => $order
         ]);
-
     }
 
     public function update(CheckoutRequest $request, $id)
@@ -137,7 +143,12 @@ class OrderController extends Controller
     public function destroy($id)
     {
         Order::destroy($id);
-
+        $order = Order::query()->findOrFail($id);
+        foreach ($order->products as $product) {
+            Product::query()->where('id', $product->id)->increment('quantity', $product->pivot->quantity);
+            Product::query()->where('id', $product->id)->decrement('sold', $product->pivot->quantity);
+        }
+        
         return response()->json([
             'success' => 'Hủy thành công',
         ]);

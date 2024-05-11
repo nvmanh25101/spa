@@ -34,7 +34,12 @@ class UpdateRequest extends FormRequest
                 'required',
                 'integer',
                 Rule::in(AppointmentStatusEnum::asArray()),
-            ]
+            ],
+            'voucher_id' => [
+                'nullable',
+                'integer',
+                'exists:vouchers,id',
+            ],
         ];
     }
 
@@ -52,6 +57,8 @@ class UpdateRequest extends FormRequest
             'status.required' => 'Vui lòng nhập :attribute',
             'status.integer' => ':attribute không chính xác',
             'status.in' => ':attribute không hợp lệ.',
+            'voucher_id.integer' => ':attribute phải là số nguyên',
+            'voucher_id.exists' => ':attribute không tồn tại',
         ];
     }
 
@@ -62,6 +69,7 @@ class UpdateRequest extends FormRequest
             'time_id' => 'Check-in',
             'admin_id' => 'Nhân viên',
             'status' => 'Trạng thái',
+            'voucher_id' => 'Mã giảm giá',
         ];
     }
 }

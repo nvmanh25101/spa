@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Admin\Order;
 
 use App\Enums\OrderPaymentStatusEnum;
-use App\Enums\OrderStatusEnum;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -23,12 +22,11 @@ class UpdateRequest extends FormRequest
                 'exists:admins,id',
             ],
             'status' => [
-                'required',
+                'nullable',
                 'integer',
-                Rule::in(OrderStatusEnum::asArray()),
             ],
             'payment_status' => [
-                'required',
+                'nullable',
                 'integer',
                 Rule::in(OrderPaymentStatusEnum::asArray()),
             ],

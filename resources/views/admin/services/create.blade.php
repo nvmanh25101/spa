@@ -87,11 +87,12 @@
 
                 </div>
                 `);
+                $('.delete-price').click(function () {
+                    $(this).parent().remove();
+                });
             })
 
-            $('.delete-price').click(function () {
-                $(this).parent().remove();
-            });
+
         })
     </script>
 @endpush
