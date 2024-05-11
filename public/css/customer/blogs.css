@@ -1,0 +1,165 @@
+.nav-link {
+    font-size: 1.4rem;
+    color: #000000;
+    background-color: transparent;
+    text-transform: uppercase;
+    display: block;
+    min-width: 100px;
+    text-align: center;
+}
+
+.master-row {
+    justify-content: center;
+}
+
+.page-header {
+    margin-top: 96px;
+    margin-bottom: 0;
+}
+
+.btn-booking {
+    text-transform: uppercase;
+    padding: 8px 19px !important;
+    width: 100%;
+}
+
+.single-product-detail {
+    margin-top: 20px;
+    padding-top: 40px;
+}
+
+/*.custom-accordion .card-header {*/
+/*    margin-top: 0;*/
+/*    background-color: var(--background);*/
+/*}*/
+
+/*.custom-accordion-title,*/
+/*.custom-accordion .accordion-arrow {*/
+/*    color: #FFFFFF;*/
+/*    font-size: 1.6rem;*/
+/*}*/
+
+/*.custom-accordion-title:focus,*/
+/*.panel-heading:focus {*/
+/*    color: #FFFFFF;*/
+/*}*/
+
+.panel-heading:hover {
+    color: #FFFFFF !important;
+    background-color: var(--background-primary);
+    border: var(--background-primary);
+}
+
+.custom-accordion-title:hover {
+    color: #FFFFFF !important;
+
+}
+
+.single-product-detail .single-product-info .product-title a:hover {
+    color: var(--text-primary);
+}
+
+.zoa-btn {
+    color: #FFFFFF;
+}
+
+.zoa-btn:hover {
+    color: #FFFFFF !important;
+    background-color: var(--background-primary);
+    border: var(--background-primary);
+}
+
+.custom-accordion .card-body {
+    border: none;
+}
+
+.rate {
+    height: 46px;
+    padding: 0 195px 0 0;
+}
+
+.rate:not(:checked) > input {
+    position: absolute;
+    left: -9999px;
+}
+
+.rate:not(:checked) > label {
+    float: right;
+    width: 1em;
+    overflow: hidden;
+    white-space: nowrap;
+    cursor: pointer;
+    font-size: 30px;
+    color: #ccc;
+}
+
+.rate:not(:checked) > label:before {
+    content: '★ ';
+}
+
+.rate > input:checked ~ label {
+    color: #ffc700;
+}
+
+.rate:not(:checked) > label:hover,
+.rate:not(:checked) > label:hover ~ label {
+    color: #deb217;
+}
+
+.rate > input:checked + label:hover,
+.rate > input:checked + label:hover ~ label,
+.rate > input:checked ~ label:hover,
+.rate > input:checked ~ label:hover ~ label,
+.rate > label:hover ~ input:checked ~ label {
+    color: #c59b08;
+}
+
+.star-full i {
+    color: #ffc700;
+    font-size: 2rem;
+}
+
+.star-out i {
+    font-size: 2rem;
+}
+
+.product-title a,
+.product-price span,
+.product-countdown h3,
+.blog-date,
+.blog-title a,
+.read-more {
+    color: #aab8c5 !important;
+}
+
+.product-countdown span {
+    color: var(--text-primary) !important;
+}
+
+.product-title a:hover,
+.blog-title a:hover,
+.read-more:hover {
+    color: var(--text-primary) !important;
+}
+
+.fade {
+    -webkit-transition: opacity .15s linear;
+    transition: opacity .15s linear;
+    opacity: 1;
+}
+
+.alert-dismissible .close {
+    position: relative;
+    top: -7px;
+}
+
+.img-responsive {
+    max-width: 100%;
+}
+.nav-user {
+    display: flex;
+    align-items: center;
+    border: none;
+    padding: 1rem 0.6rem !important;
+}
+

@@ -4,7 +4,7 @@ namespace App\Http;
 
 use App\Http\Middleware\Authenticate;
 use App\Http\Middleware\checkAdminLogin;
-use App\Http\Middleware\checkExceptTransport;
+use App\Http\Middleware\checkAdminRole;
 use App\Http\Middleware\EncryptCookies;
 use App\Http\Middleware\IsSuperAdmin;
 use App\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -92,6 +92,6 @@ class Kernel extends HttpKernel
         'verified' => EnsureEmailIsVerified::class,
         'isSuperAdmin' => IsSuperAdmin::class,
         'checkAdminLogin' => checkAdminLogin::class,
-        'checkExceptTransport' => checkExceptTransport::class,
+        'checkAdminRole' => checkAdminRole::class,
     ];
 }

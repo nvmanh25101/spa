@@ -20,7 +20,7 @@ class DestroyRequest extends FormRequest
     {
         return [
             [
-                'course' => [
+                'product' => [
                     'required',
                     Rule::exists(Product::class, 'id'),
                 ],
